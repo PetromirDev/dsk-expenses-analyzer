@@ -1,5 +1,5 @@
 {
-	"name": "hosting",
+	"name": "dsk-expenses-analyzer",
 	"compatibility_date": "2025-10-08",
 	"assets": {
 		"directory": "./dist"
