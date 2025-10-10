@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AccountMovements
+  xmlns:d="http://schemas.datacontract.org/2004/07/DAIS.eBank.Client.WEB.mvc.Accounts.Models"
+  xmlns:d1="http://schemas.datacontract.org/2004/07/DAIS.eBank.Client.WEB.mvc.Accounts.Models">
+
+  <!-- Small transactions (1-20 BGN) - 20 transactions -->
+  <AccountMovement>
+    <ValueDate>08.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 08.10.2025 09:03</Reason>
+    <OppositeSideName>BGR VARNA MAGAZIN HRISI</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>3,50</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>07.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 07.10.2025 14:22</Reason>
+    <OppositeSideName>BGR SOFIA DM BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>12,80</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>07.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 07.10.2025 18:45</Reason>
+    <OppositeSideName>BGR BURGAS KRUIZ 310 BURGAS</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>8,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>06.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 06.10.2025 12:30</Reason>
+    <OppositeSideName>BGR PLOVDIV MAGAZIN SLAVI</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>5,20</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>06.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 06.10.2025 16:15</Reason>
+    <OppositeSideName>BGR SOFIA DM BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>18,50</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>05.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 05.10.2025 10:05</Reason>
+    <OppositeSideName>BGR VARNA MAGAZIN HRISI</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>4,70</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>05.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 05.10.2025 19:22</Reason>
+    <OppositeSideName>BGR RUSE MOYAT MAGAZIN</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>6,30</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>04.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 04.10.2025 08:15</Reason>
+    <OppositeSideName>BGR SOFIA DM BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>15,60</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>04.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 04.10.2025 13:40</Reason>
+    <OppositeSideName>BGR BURGAS FRATELLI BURGAS ZHK MEDEN RUDNIK</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>11,20</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>03.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 03.10.2025 17:55</Reason>
+    <OppositeSideName>BGR VARNA MAGAZIN HRISI</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>2,80</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>03.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 03.10.2025 20:10</Reason>
+    <OppositeSideName>BGR PLOVDIV DELTA PLANET PLOVDIV</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>7,50</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>02.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 02.10.2025 11:25</Reason>
+    <OppositeSideName>BGR SOFIA DM BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>9,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>02.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 02.10.2025 15:50</Reason>
+    <OppositeSideName>BGR RUSE MOYAT MAGAZIN</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>13,40</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>01.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 01.10.2025 09:30</Reason>
+    <OppositeSideName>BGR VARNA MAGAZIN HRISI</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>16,80</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>01.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 01.10.2025 18:20</Reason>
+    <OppositeSideName>BGR BURGAS KRUIZ 310 BURGAS</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>14,20</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>30.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 30.09.2025 12:05</Reason>
+    <OppositeSideName>BGR SOFIA DM BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>19,50</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>29.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 29.09.2025 16:45</Reason>
+    <OppositeSideName>BGR PLOVDIV MAGAZIN SLAVI</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>10,70</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>28.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 28.09.2025 14:15</Reason>
+    <OppositeSideName>BGR VARNA MAGAZIN HRISI</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>6,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>27.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 27.09.2025 10:30</Reason>
+    <OppositeSideName>BGR RUSE MOYAT MAGAZIN</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>17,30</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>26.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 26.09.2025 19:00</Reason>
+    <OppositeSideName>BGR BURGAS FRATELLI BURGAS ZHK MEDEN RUDNIK</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>12,50</Amount>
+  </AccountMovement>
+
+  <!-- Medium transactions (20-100 BGN) - Groceries and retail -->
+  <AccountMovement>
+    <ValueDate>08.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 08.10.2025 10:15</Reason>
+    <OppositeSideName>BGR SOFIA KAUFLAND BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>45,30</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>07.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 07.10.2025 11:20</Reason>
+    <OppositeSideName>BGR VARNA LIDL BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>38,75</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>06.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 06.10.2025 15:30</Reason>
+    <OppositeSideName>BGR PLOVDIV BILLA BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>52,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>05.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 05.10.2025 09:45</Reason>
+    <OppositeSideName>BGR BURGAS KAUFLAND BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>67,20</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>04.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 04.10.2025 12:00</Reason>
+    <OppositeSideName>BGR SOFIA LIDL BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>41,85</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>03.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 03.10.2025 16:20</Reason>
+    <OppositeSideName>BGR RUSE BILLA BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>29,50</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>02.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 02.10.2025 10:30</Reason>
+    <OppositeSideName>BGR VARNA KAUFLAND BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>58,40</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>01.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 01.10.2025 14:15</Reason>
+    <OppositeSideName>BGR PLOVDIV LIDL BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>33,60</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>30.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 30.09.2025 11:45</Reason>
+    <OppositeSideName>BGR BURGAS BILLA BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>46,70</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>29.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 29.09.2025 09:20</Reason>
+    <OppositeSideName>BGR SOFIA KAUFLAND BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>72,30</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>28.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 28.09.2025 13:50</Reason>
+    <OppositeSideName>BGR RUSE LIDL BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>27,80</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>27.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 27.09.2025 17:30</Reason>
+    <OppositeSideName>BGR VARNA BILLA BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>54,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>26.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 26.09.2025 10:05</Reason>
+    <OppositeSideName>BGR PLOVDIV KAUFLAND BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>39,20</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>25.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 25.09.2025 12:40</Reason>
+    <OppositeSideName>BGR SOFIA MY MARKET UL健RAVENTSKA</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>63,50</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>24.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 24.09.2025 15:20</Reason>
+    <OppositeSideName>BGR BURGAS TEHNOMARKET UL ALEKSANDROVSKA</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>87,40</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>23.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 23.09.2025 11:10</Reason>
+    <OppositeSideName>BGR VARNA LIDL BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>31,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>22.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 22.09.2025 16:55</Reason>
+    <OppositeSideName>BGR RUSE KAUFLAND BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>48,60</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>21.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 21.09.2025 09:35</Reason>
+    <OppositeSideName>BGR PLOVDIV BILLA BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>56,80</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>20.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 20.09.2025 14:25</Reason>
+    <OppositeSideName>BGR SOFIA KAUFLAND BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>44,30</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>19.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 19.09.2025 18:15</Reason>
+    <OppositeSideName>BGR BURGAS LIDL BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>35,70</Amount>
+  </AccountMovement>
+
+  <!-- Large transactions (100-500 BGN) - Utility, shopping, services -->
+  <AccountMovement>
+    <ValueDate>05.10.2025</ValueDate>
+    <Reason>Плащане на услуга</Reason>
+    <OppositeSideName>BGR SOFIA ENERGO PRO BG</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>145,80</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>04.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 04.10.2025 15:30</Reason>
+    <OppositeSideName>BGR VARNA Metro Cash Carry Varna At</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>187,45</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>03.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 03.10.2025 12:45</Reason>
+    <OppositeSideName>BGR BURGAS IKEA BURGAS STORE</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>342,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>02.10.2025</ValueDate>
+    <Reason>Куриерска услуга</Reason>
+    <OppositeSideName>BGR PLOVDIV ECONT EXPRESS AD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>128,50</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>01.10.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 01.10.2025 11:20</Reason>
+    <OppositeSideName>BGR SOFIA EVROPAT 2000 AD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>276,80</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>30.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 30.09.2025 16:10</Reason>
+    <OppositeSideName>BGR RUSE TEHNOPOLIS RUSE</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>412,30</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>28.09.2025</ValueDate>
+    <Reason>Плащане на услуга</Reason>
+    <OppositeSideName>BGR VARNA VIVACOM BG</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>89,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>27.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 27.09.2025 14:30</Reason>
+    <OppositeSideName>BGR SOFIA DM BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>168,75</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>25.09.2025</ValueDate>
+    <Reason>Куриерска услуга</Reason>
+    <OppositeSideName>BGR BURGAS SPEEDY AD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>95,40</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>24.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 24.09.2025 10:15</Reason>
+    <OppositeSideName>BGR PLOVDIV Metro Cash Carry Plovdiv At</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>234,60</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>22.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 22.09.2025 13:45</Reason>
+    <OppositeSideName>BGR VARNA DELTA PLANET VARNA</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>156,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>20.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 20.09.2025 17:20</Reason>
+    <OppositeSideName>BGR SOFIA TEHNOPOLIS SOFIA</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>387,50</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>18.09.2025</ValueDate>
+    <Reason>Плащане на услуга</Reason>
+    <OppositeSideName>BGR RUSE ENERGO PRO BG</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>132,20</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>16.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 16.09.2025 11:50</Reason>
+    <OppositeSideName>BGR BURGAS UNI AUTO LTD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>298,00</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>14.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 14.09.2025 15:30</Reason>
+    <OppositeSideName>LUX Luxembourg ALIEXPRESS COM 11 13 Boulevar</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>176,85</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>12.09.2025</ValueDate>
+    <Reason>Куриерска услуга</Reason>
+    <OppositeSideName>BGR PLOVDIV ECONT EXPRESS AD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>143,90</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>10.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 10.09.2025 09:25</Reason>
+    <OppositeSideName>BGR VARNA IKEA VARNA STORE Okolovratsen</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>421,45</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>08.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 08.09.2025 14:10</Reason>
+    <OppositeSideName>BGR SOFIA DM BULGARIA EOOD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>205,60</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>05.09.2025</ValueDate>
+    <Reason>Плащане на услуга</Reason>
+    <OppositeSideName>BGR BURGAS VIVACOM BG</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>95,50</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>03.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 03.09.2025 16:45</Reason>
+    <OppositeSideName>BGR RUSE Metro Cash Carry Ruse At</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>312,80</Amount>
+  </AccountMovement>
+
+  <!-- Very large transactions (500+ BGN) - Major purchases -->
+  <AccountMovement>
+    <ValueDate>30.09.2025</ValueDate>
+    <Reason>Резервация</Reason>
+    <OppositeSideName>LUX 592 491 7757 AIRBNB HMTQK49NTF 4 R</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>1128,49</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>25.09.2025</ValueDate>
+    <Reason>533979xxxxxx4274 ПОС 25.09.2025 11:30</Reason>
+    <OppositeSideName>BGR VARNA KOSEV CONCEPT LTD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>823,00</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>20.09.2025</ValueDate>
+    <Reason>Самолетен билет</Reason>
+    <OppositeSideName>BGR SOFIA RYANAIR224G17I7R CHRISTOPHER C</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>645,38</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>15.09.2025</ValueDate>
+    <Reason>Куриерска услуга - партиден товар</Reason>
+    <OppositeSideName>BGR SOFIA ECONT EXPRESS AD</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>987,63</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>10.09.2025</ValueDate>
+    <Reason>Хотел</Reason>
+    <OppositeSideName>BGR PLOVDIV HOTEL TRIMONTIUM</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>756,00</Amount>
+  </AccountMovement>
+
+  <!-- Income transactions -->
+  <AccountMovement>
+    <ValueDate>01.10.2025</ValueDate>
+    <Reason>ОСНОВНА ЗАПЛАТА ЗА МЕСЕЦ 09.2025 СПИСЪК 072961200400</Reason>
+    <OppositeSideName>ТЕХНОЛОГИИ ГРУП ООД</OppositeSideName>
+    <OppositeSideAccount>BG46STSA93000029612004</OppositeSideAccount>
+    <MovementType>Credit</MovementType>
+    <Amount>2850,00</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>01.09.2025</ValueDate>
+    <Reason>ОСНОВНА ЗАПЛАТА ЗА МЕСЕЦ 08.2025 СПИСЪК 072961200400</Reason>
+    <OppositeSideName>ТЕХНОЛОГИИ ГРУП ООД</OppositeSideName>
+    <OppositeSideAccount>BG46STSA93000029612004</OppositeSideAccount>
+    <MovementType>Credit</MovementType>
+    <Amount>2850,00</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>15.09.2025</ValueDate>
+    <Reason>ПРЕВОД ОТ ДРУГА СМЕТКА</Reason>
+    <OppositeSideName>ГЕОРГИ ИВАНОВ ГЕОРГИЕВ</OppositeSideName>
+    <OppositeSideAccount>BG32STSA93000030695843</OppositeSideAccount>
+    <MovementType>Credit</MovementType>
+    <Amount>500,00</Amount>
+  </AccountMovement>
+
+</AccountMovements>
