@@ -1,5 +1,60 @@
 import xml2js from 'xml2js'
+import merchantsConfig from '../data/merchants.json'
 
+// Transliteration map for Bulgarian Cyrillic to Latin
+const transliterationMap = {
+  А: 'A',
+  Б: 'B',
+  В: 'V',
+  Г: 'G',
+  Д: 'D',
+  Е: 'E',
+  Ж: 'ZH',
+  З: 'Z',
+  И: 'I',
+  Й: 'Y',
+  К: 'K',
+  Л: 'L',
+  М: 'M',
+  Н: 'N',
+  О: 'O',
+  П: 'P',
+  Р: 'R',
+  С: 'S',
+  Т: 'T',
+  У: 'U',
+  Ф: 'F',
+  Х: 'H',
+  Ц: 'TS',
+  Ч: 'CH',
+  Ш: 'SH',
+  Щ: 'SHT',
+  Ъ: 'A',
+  Ь: 'Y',
+  Ю: 'YU',
+  Я: 'YA'
+}
+
+// Function to normalize text (transliterate Cyrillic and uppercase)
+function normalizeText(text) {
+  if (!text) return ''
+  return text
+    .toUpperCase()
+    .split('')
+    .map((char) => transliterationMap[char] || char)
+    .join('')
+    .trim()
+}
+
+// Build merchant database from JSON config
+export const merchantDatabase = Object.values(merchantsConfig)
+  .flat()
+  .reduce((acc, merchant) => {
+    acc[merchant.id] = merchant
+    return acc
+  }, {})
+
+// Legacy mapping for backward compatibility
 export const defaultBusinessMapping = {
   LIDL: 'Lidl',
   KAUFLAND: 'Kaufland',
@@ -12,24 +67,26 @@ export const defaultBusinessMapping = {
 // Default groups
 export const defaultGroups = [
   'Храна',
+  'Техника',
   'Жилище',
   'Битови',
   'Транспорт',
   'Развлечения',
+  'Ресторанти',
+  'Онлайн пазаруване',
   'Здраве',
   'Облекло',
   'Други'
 ]
 
-// Default business-to-group mappings
-export const defaultBusinessGroupMapping = {
-  Lidl: 'Храна',
-  Kaufland: 'Храна',
-  Billa: 'Храна',
-  Shell: 'Транспорт',
-  "Domino's Pizza": 'Храна',
-  Technopolis: 'Битови'
-}
+// Build defaultBusinessGroupMapping from merchantDatabase
+export const defaultBusinessGroupMapping = Object.values(merchantDatabase).reduce(
+  (acc, merchant) => {
+    acc[merchant.name] = merchant.category
+    return acc
+  },
+  {}
+)
 
 // Get custom mappings from localStorage
 export function getCustomMappings() {
@@ -168,20 +225,141 @@ export function parseDate(dateStr) {
   return new Date(year, month - 1, day)
 }
 
-// Function to get human-readable business name
+// Enhanced function to get human-readable business name with transliteration and fuzzy matching
 export function getBusinessName(oppositeSideName) {
   if (!oppositeSideName || oppositeSideName.trim() === '') {
     return 'Без име'
   }
 
-  const allMappings = getAllMappings()
+  // Normalize the input (transliterate Cyrillic to Latin and uppercase)
+  const normalizedInput = normalizeText(oppositeSideName)
 
-  for (const [key, value] of Object.entries(allMappings)) {
-    if (oppositeSideName.toUpperCase().includes(key.toUpperCase())) {
+  // First priority: Check exact custom mappings
+  const customMappings = getCustomMappings()
+  if (customMappings[oppositeSideName]) {
+    return customMappings[oppositeSideName]
+  }
+
+  // Second priority: Check merchantDatabase with pattern matching
+  // Sort merchants by longest pattern first for better matching
+  const merchants = Object.values(merchantDatabase)
+  const sortedMerchants = merchants.sort((a, b) => {
+    const maxLengthA = Math.max(...a.patterns.map((p) => p.length))
+    const maxLengthB = Math.max(...b.patterns.map((p) => p.length))
+    return maxLengthB - maxLengthA
+  })
+
+  for (const merchant of sortedMerchants) {
+    for (const pattern of merchant.patterns) {
+      const normalizedPattern = normalizeText(pattern)
+
+      // Check if the normalized pattern is in the normalized input
+      if (normalizedInput.includes(normalizedPattern)) {
+        return merchant.name
+      }
+    }
+  }
+
+  // Third priority: Check legacy defaultBusinessMapping
+  const upperName = oppositeSideName.toUpperCase()
+  for (const [key, value] of Object.entries(defaultBusinessMapping)) {
+    if (upperName.includes(key.toUpperCase())) {
       return value
     }
   }
-  return oppositeSideName // Return original if no mapping found
+
+  // If no mapping found, clean up the name
+  return cleanBusinessName(oppositeSideName)
+}
+
+// Helper function to clean up business names that don't have mappings
+function cleanBusinessName(name) {
+  // Remove country codes (BGR, LUX, DEU, FRA, USA, etc.)
+  let cleaned = name.replace(/^[A-Z]{3}\s+/i, '')
+
+  // Remove city names at the start (common pattern in Bulgarian bank exports)
+  const bulgarianCities = [
+    'SOFIA',
+    'SOFIYA',
+    'SOFIQ',
+    'СОФИЯ',
+    'VARNA',
+    'ВАРНА',
+    'BURGAS',
+    'БУРГАС',
+    'PLOVDIV',
+    'ПЛОВДИВ',
+    'RUSE',
+    'РУСЕ',
+    'STARA ZAGORA',
+    'СТАРА ЗАГОРА',
+    'PLEVEN',
+    'ПЛЕВЕН',
+    'SLIVEN',
+    'СЛИВЕН',
+    'DOBRICH',
+    'ДОБРИЧ',
+    'SHUMEN',
+    'ШУМЕН',
+    'PERNIK',
+    'ПЕРНИК',
+    'HASKOVO',
+    'ХАСКОВО',
+    'YAMBOL',
+    'ЯМБОЛ',
+    'PAZARDZHIK',
+    'ПАЗАРДЖИК',
+    'BLAGOEVGRAD',
+    'БЛАГОЕВГРАД',
+    'VELIKO TARNOVO',
+    'ВЕЛИКО ТЪРНОВО',
+    'VRACA',
+    'ВРАЦА'
+  ]
+
+  // Sort by length (longer first) to match multi-word cities first
+  bulgarianCities.sort((a, b) => b.length - a.length)
+
+  for (const city of bulgarianCities) {
+    const regex = new RegExp(`^${city}\\s+`, 'i')
+    cleaned = cleaned.replace(regex, '')
+  }
+
+  // Remove common legal suffixes (Bulgarian business types)
+  cleaned = cleaned
+    .replace(/\s+EOOD$/i, '') // ЕООД - Еднолично дружество с ограничена отговорност
+    .replace(/\s+OOD$/i, '') // ООД - Дружество с ограничена отговорност
+    .replace(/\s+AD$/i, '') // АД - Акционерно дружество
+    .replace(/\s+EAD$/i, '') // ЕАД - Еднолично акционерно дружество
+    .replace(/\s+LTD$/i, '') // Ltd - Limited
+    .replace(/\s+EOOD$/i, '')
+    .replace(/\s+ООД$/i, '')
+    .replace(/\s+АД$/i, '')
+    .replace(/\s+ЕАД$/i, '')
+    .replace(/\s+ЕООД$/i, '')
+
+  // Remove "BULGARIA" suffix
+  cleaned = cleaned.replace(/\s+BULGARIA$/i, '').replace(/\s+БЪЛГАРИЯ$/i, '')
+
+  // Trim extra whitespace
+  cleaned = cleaned.trim()
+
+  // If the cleaned name is too short or empty, return original
+  if (cleaned.length < 3) {
+    return name
+  }
+
+  // Capitalize first letter of each word for better readability
+  cleaned = cleaned
+    .toLowerCase()
+    .split(' ')
+    .map((word) => {
+      if (word.length === 0) return word
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(' ')
+
+  return cleaned
 }
 
 // Function to format currency

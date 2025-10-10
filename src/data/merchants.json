@@ -1,0 +1,500 @@
+{
+  "groceries": [
+    {
+      "id": "lidl",
+      "patterns": ["LIDL", "ЛИДЛ"],
+      "name": "Lidl",
+      "category": "Храна"
+    },
+    {
+      "id": "kaufland",
+      "patterns": ["KAUFLAND", "КАУФЛАНД"],
+      "name": "Kaufland",
+      "category": "Храна"
+    },
+    {
+      "id": "billa",
+      "patterns": ["BILLA", "БИЛА", "БИЛЛА"],
+      "name": "Billa",
+      "category": "Храна"
+    },
+    {
+      "id": "fantastico",
+      "patterns": ["FANTASTICO", "ФАНТАСТИКО"],
+      "name": "Fantastico",
+      "category": "Храна"
+    },
+    {
+      "id": "t-market",
+      "patterns": ["T MARKET", "T-MARKET", "TMARKET", "Т МАРКЕТ", "Т-МАРКЕТ"],
+      "name": "T Market",
+      "category": "Храна"
+    },
+    {
+      "id": "metro",
+      "patterns": ["METRO CASH", "METRO", "МЕТРО"],
+      "name": "Metro Cash & Carry",
+      "category": "Храна"
+    },
+    {
+      "id": "cba",
+      "patterns": ["CBA", "СВА"],
+      "name": "CBA",
+      "category": "Храна"
+    },
+    {
+      "id": "piccadilly",
+      "patterns": ["PICCADILLY", "ПИКАДИЛИ"],
+      "name": "Piccadilly",
+      "category": "Храна"
+    },
+    {
+      "id": "ekomarket",
+      "patterns": ["EKOMARKET", "EKO MARKET", "ЕКОМАРКЕТ"],
+      "name": "Ekomarket",
+      "category": "Храна"
+    }
+  ],
+  "tech": [
+    {
+      "id": "technopolis",
+      "patterns": ["TECHNOPOLIS", "ТЕХНОПОЛИС", "TEHNO POLIS"],
+      "name": "Technopolis",
+      "category": "Техника"
+    },
+    {
+      "id": "technomarket",
+      "patterns": ["TECHNOMARKET", "ТЕХНОМАРКЕТ", "TEHNO MARKET"],
+      "name": "Technomarket",
+      "category": "Техника"
+    },
+    {
+      "id": "emag",
+      "patterns": ["EMAG", "E-MAG", "ЕМАГ"],
+      "name": "eMAG",
+      "category": "Техника"
+    },
+    {
+      "id": "jarcomputers",
+      "patterns": ["JAR COMPUTERS", "JAR COMPUTER", "JARCOMPUTERS", "ЯР КОМПЮТРИ"],
+      "name": "JAR Computers",
+      "category": "Техника"
+    },
+    {
+      "id": "zora",
+      "patterns": ["ZORA", "ЗОРА"],
+      "name": "Zora",
+      "category": "Техника"
+    },
+    {
+      "id": "ardes",
+      "patterns": ["ARDES", "АРДЕС"],
+      "name": "Ardes",
+      "category": "Техника"
+    }
+  ],
+  "fashion": [
+    {
+      "id": "hm",
+      "patterns": ["H&M", "H & M", "HENNES", "MAURITZ"],
+      "name": "H&M",
+      "category": "Облекло"
+    },
+    {
+      "id": "zara",
+      "patterns": ["ZARA", "ЗАРА"],
+      "name": "Zara",
+      "category": "Облекло"
+    },
+    {
+      "id": "newyorker",
+      "patterns": ["NEW YORKER", "NEWYORKER", "НЮ ЙОРКЪР"],
+      "name": "New Yorker",
+      "category": "Облекло"
+    },
+    {
+      "id": "deichmann",
+      "patterns": ["DEICHMANN", "ДАЙХМАН"],
+      "name": "Deichmann",
+      "category": "Облекло"
+    },
+    {
+      "id": "terranova",
+      "patterns": ["TERRANOVA", "ТЕРАНОВА"],
+      "name": "Terranova",
+      "category": "Облекло"
+    },
+    {
+      "id": "colin",
+      "patterns": ["COLIN", "COLIN'S", "КОЛИН"],
+      "name": "Colin's",
+      "category": "Облекло"
+    },
+    {
+      "id": "cropp",
+      "patterns": ["CROPP", "КРОП"],
+      "name": "Cropp",
+      "category": "Облекло"
+    },
+    {
+      "id": "reserved",
+      "patterns": ["RESERVED", "РЕЗЕРВЕД"],
+      "name": "Reserved",
+      "category": "Облекло"
+    }
+  ],
+  "health": [
+    {
+      "id": "sopharmacy",
+      "patterns": ["SOPHARMACY", "СОФАРМАСИ", "SO PHARMACY"],
+      "name": "Sopharmacy",
+      "category": "Здраве"
+    },
+    {
+      "id": "subra",
+      "patterns": ["SUBRA", "СУБРА"],
+      "name": "Subra",
+      "category": "Здраве"
+    },
+    {
+      "id": "benu",
+      "patterns": ["BENU", "БЕНУ"],
+      "name": "Benu",
+      "category": "Здраве"
+    },
+    {
+      "id": "remedium",
+      "patterns": ["REMEDIUM", "РЕМЕДИУМ"],
+      "name": "Remedium",
+      "category": "Здраве"
+    },
+    {
+      "id": "framar",
+      "patterns": ["FRAMAR", "ФРАМАР"],
+      "name": "Framar",
+      "category": "Здраве"
+    }
+  ],
+  "car": [
+    {
+      "id": "shell",
+      "patterns": ["SHELL", "ШЕЛ"],
+      "name": "Shell",
+      "category": "Транспорт"
+    },
+    {
+      "id": "omv",
+      "patterns": ["OMV", "ОМВ"],
+      "name": "OMV",
+      "category": "Транспорт"
+    },
+    {
+      "id": "lukoil",
+      "patterns": ["LUKOIL", "ЛУКОЙЛ", "LUCOIL"],
+      "name": "Lukoil",
+      "category": "Транспорт"
+    },
+    {
+      "id": "eko",
+      "patterns": ["EKO BULGARIA", "EKO", "ЕКО"],
+      "name": "EKO",
+      "category": "Транспорт"
+    },
+    {
+      "id": "petrol",
+      "patterns": ["PETROL", "ПЕТРОЛ"],
+      "name": "Petrol",
+      "category": "Транспорт"
+    },
+    {
+      "id": "gazprom",
+      "patterns": ["GAZPROM", "ГАЗПРОМ"],
+      "name": "Gazprom",
+      "category": "Транспорт"
+    },
+    {
+      "id": "vinetki",
+      "patterns": ["Its Vinetki", "Винетки", "Vinetki", "VINETKI"],
+      "name": "Vinetka",
+      "category": "Транспорт"
+    }
+  ],
+  "restaurants": [
+    {
+      "id": "dominos",
+      "patterns": ["DOMINOS", "DOMINO'S", "ДОМИНОС"],
+      "name": "Domino's Pizza",
+      "category": "Ресторанти"
+    },
+    {
+      "id": "mcdonalds",
+      "patterns": ["MCDONALD", "MCDONALD'S", "МАКДОНАЛДС"],
+      "name": "McDonald's",
+      "category": "Ресторанти"
+    },
+    {
+      "id": "kfc",
+      "patterns": ["KFC", "КЕЙ ЕФ СИ"],
+      "name": "KFC",
+      "category": "Ресторанти"
+    },
+    {
+      "id": "happybar",
+      "patterns": ["HAPPY BAR", "HAPPYBAR", "ХЕПИ БАР"],
+      "name": "Happy Bar & Grill",
+      "category": "Ресторанти"
+    },
+    {
+      "id": "pizzahut",
+      "patterns": ["PIZZA HUT", "PIZZAHUT", "ПИЦА ХЪТ"],
+      "name": "Pizza Hut",
+      "category": "Ресторанти"
+    },
+    {
+      "id": "subway",
+      "patterns": ["SUBWAY", "СЪБУЕЙ"],
+      "name": "Subway",
+      "category": "Ресторанти"
+    }
+  ],
+  "utilities": [
+    {
+      "id": "energopro",
+      "patterns": ["ENERGO-PRO", "ENERGO PRO", "ЕНЕРГО-ПРО", "ЕНЕРГО ПРО", "ENERGOPRO"],
+      "name": "Energo-Pro",
+      "category": "Битови"
+    },
+    {
+      "id": "cez",
+      "patterns": ["CEZ", "ЧЕЗ"],
+      "name": "ČEZ",
+      "category": "Битови"
+    },
+    {
+      "id": "vivacom",
+      "patterns": ["VIVACOM", "ВИВАКОМ"],
+      "name": "Vivacom",
+      "category": "Битови"
+    },
+    {
+      "id": "a1",
+      "patterns": ["A1 BULGARIA", "A1", "А1"],
+      "name": "A1",
+      "category": "Битови"
+    },
+    {
+      "id": "yettel",
+      "patterns": ["YETTEL", "ЙЕТЕЛ"],
+      "name": "Yettel",
+      "category": "Битови"
+    },
+    {
+      "id": "toplofikacia",
+      "patterns": ["TOPLOFIKACIA", "ТОПЛОФИКАЦИЯ", "TOPLOFIKATSIA"],
+      "name": "Топлофикация",
+      "category": "Битови"
+    },
+    {
+      "id": "sofiyskavoda",
+      "patterns": ["SOFIYSKA VODA", "СОФИЙСКА ВОДА", "SOFIJSKA VODA"],
+      "name": "Софийска вода",
+      "category": "Битови"
+    }
+  ],
+  "courier": [
+    {
+      "id": "econt",
+      "patterns": ["ECONT", "ЕКОНТ", "ECONT EXPRESS"],
+      "name": "Econt",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "speedy",
+      "patterns": ["SPEEDY", "СПИДИ"],
+      "name": "Speedy",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "dhl",
+      "patterns": ["DHL", "ДХЛ"],
+      "name": "DHL",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "fedex",
+      "patterns": ["FEDEX", "ФЕДЕКС"],
+      "name": "FedEx",
+      "category": "Онлайн пазаруване"
+    }
+  ],
+  "online": [
+    {
+      "id": "aliexpress",
+      "patterns": ["ALIEXPRESS", "ALI EXPRESS", "АЛИЕКСПРЕС"],
+      "name": "AliExpress",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "amazon",
+      "patterns": ["AMAZON", "АМАЗОН"],
+      "name": "Amazon",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "ebay",
+      "patterns": ["EBAY", "ИБЕЙ"],
+      "name": "eBay",
+      "category": "Онлайн пазаруване"
+    }
+  ],
+  "travel": [
+    {
+      "id": "airbnb",
+      "patterns": ["AIRBNB", "AIR BNB", "ЕЪРБНБ"],
+      "name": "Airbnb",
+      "category": "Почивки"
+    },
+    {
+      "id": "booking",
+      "patterns": ["BOOKING.COM", "BOOKING COM", "BOOKING", "БУКИНГ"],
+      "name": "Booking.com",
+      "category": "Почивки"
+    },
+    {
+      "id": "ryanair",
+      "patterns": ["RYANAIR", "RYAN AIR", "РАЙЪНЕЪР"],
+      "name": "Ryanair",
+      "category": "Почивки"
+    },
+    {
+      "id": "wizzair",
+      "patterns": ["WIZZAIR", "WIZZ AIR", "УИЗЕЪР"],
+      "name": "Wizz Air",
+      "category": "Почивки"
+    }
+  ],
+  "transport": [
+    {
+      "id": "uber",
+      "patterns": ["UBER", "УБЕР"],
+      "name": "Uber",
+      "category": "Транспорт"
+    },
+    {
+      "id": "bolt",
+      "patterns": ["BOLT", "БОЛТ"],
+      "name": "Bolt",
+      "category": "Транспорт"
+    },
+    {
+      "id": "bdz",
+      "patterns": ["BDZ", "БДЖ", "BULGARIAN STATE RAILWAYS"],
+      "name": "БДЖ",
+      "category": "Транспорт"
+    }
+  ],
+  "home": [
+    {
+      "id": "ikea",
+      "patterns": ["IKEA", "ИКЕА"],
+      "name": "IKEA",
+      "category": "Жилище"
+    },
+    {
+      "id": "jysk",
+      "patterns": ["JYSK", "ЮИСК"],
+      "name": "JYSK",
+      "category": "Жилище"
+    },
+    {
+      "id": "praktiker",
+      "patterns": ["PRAKTIKER", "ПРАКТИКЕР"],
+      "name": "Praktiker",
+      "category": "Жилище"
+    },
+    {
+      "id": "bricolage",
+      "patterns": ["MR BRICOLAGE", "MR.BRICOLAGE", "БРИКОЛАЖ"],
+      "name": "Mr. Bricolage",
+      "category": "Жилище"
+    },
+    {
+      "id": "baumax",
+      "patterns": ["BAUMAX", "БАУМАКС"],
+      "name": "Baumax",
+      "category": "Жилище"
+    }
+  ],
+  "entertainment": [
+    {
+      "id": "cinemacity",
+      "patterns": ["CINEMA CITY", "CINEMACITY", "СИНЕМА СИТИ"],
+      "name": "Cinema City",
+      "category": "Развлечения"
+    },
+    {
+      "id": "arena",
+      "patterns": ["ARENA CINEMA", "ARENA", "АРЕНА"],
+      "name": "Arena Cinema",
+      "category": "Развлечения"
+    },
+    {
+      "id": "themall",
+      "patterns": ["THE MALL", "MALL GALLERIA", "МОЛ"],
+      "name": "The Mall",
+      "category": "Развлечения"
+    },
+    {
+      "id": "deltaplanet",
+      "patterns": ["DELTA PLANET", "DELTAPLANET", "ДЕЛТА ПЛАНЕТ"],
+      "name": "Delta Planet",
+      "category": "Развлечения"
+    },
+    {
+      "id": "paradise",
+      "patterns": ["PARADISE CENTER", "PARADISE", "ПАРАДАЙС"],
+      "name": "Paradise Center",
+      "category": "Развлечения"
+    }
+  ],
+  "beauty": [
+    {
+      "id": "dm",
+      "patterns": ["DM BULGARIA", "DM DROGERIE", "DM", "ДМ"],
+      "name": "DM Drogerie",
+      "category": "Здраве"
+    },
+    {
+      "id": "lilly",
+      "patterns": ["LILLY", "ЛИЛИ"],
+      "name": "Lilly",
+      "category": "Здраве"
+    },
+    {
+      "id": "douglas",
+      "patterns": ["DOUGLAS", "ДЪГЛАС"],
+      "name": "Douglas",
+      "category": "Здраве"
+    },
+    {
+      "id": "sephora",
+      "patterns": ["SEPHORA", "СЕФОРА"],
+      "name": "Sephora",
+      "category": "Здраве"
+    }
+  ],
+  "financial": [
+    {
+      "id": "easypay",
+      "patterns": ["EASYPAY", "EASY PAY", "ИЗИПЕЙ"],
+      "name": "EasyPay",
+      "category": "Битови"
+    },
+    {
+      "id": "epay",
+      "patterns": ["EPAY", "ЕПЕЙ"],
+      "name": "ePay",
+      "category": "Битови"
+    }
+  ]
+}
