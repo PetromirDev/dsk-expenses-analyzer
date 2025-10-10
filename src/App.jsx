@@ -1,6 +1,17 @@
 import { useState } from 'react'
-import { Upload, Search, Edit2, Github, Shield, Database, Trash2 } from 'lucide-react'
-import { analyzeXML, formatCurrency, saveCustomMapping } from './utils/xmlParser'
+import { Upload, Search, Edit2, Github, Shield, Database, Trash2, Download, FolderOpen, Plus, Tag } from 'lucide-react'
+import { 
+  analyzeXML, 
+  formatCurrency, 
+  saveCustomMapping,
+  getAllGroups,
+  saveCustomGroup,
+  deleteCustomGroup,
+  saveBusinessGroupMapping,
+  exportSettings,
+  importSettings,
+  getBusinessGroupMappings
+} from './utils/xmlParser'
 
 function App() {
   const [data, setData] = useState(null)
@@ -9,6 +20,10 @@ function App() {
   const [editingBusiness, setEditingBusiness] = useState(null)
   const [editValue, setEditValue] = useState('')
   const [xmlContent, setXmlContent] = useState(null) // Store XML for re-parsing
+  const [editingGroup, setEditingGroup] = useState(null)
+  const [selectedGroup, setSelectedGroup] = useState('')
+  const [showSettings, setShowSettings] = useState(false)
+  const [newGroupName, setNewGroupName] = useState('')
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0]
@@ -62,6 +77,73 @@ function App() {
     delete customMappings[originalName]
     localStorage.setItem('customBusinessMappings', JSON.stringify(customMappings))
     reanalyzeData()
+  }
+
+  const handleEditGroup = (businessItem) => {
+    setEditingGroup(businessItem.name)
+    setSelectedGroup(businessItem.group)
+  }
+
+  const handleSaveGroup = async (businessName) => {
+    if (!selectedGroup) return
+    
+    saveBusinessGroupMapping(businessName, selectedGroup)
+    await reanalyzeData()
+    setEditingGroup(null)
+    setSelectedGroup('')
+  }
+
+  const handleAddCustomGroup = () => {
+    if (!newGroupName.trim()) return
+    
+    saveCustomGroup(newGroupName.trim())
+    setNewGroupName('')
+    reanalyzeData()
+  }
+
+  const handleDeleteCustomGroup = (groupName) => {
+    if (window.confirm(`Сигурни ли сте, че искате да изтриете групата "${groupName}"?`)) {
+      deleteCustomGroup(groupName)
+      reanalyzeData()
+    }
+  }
+
+  const handleExportSettings = () => {
+    const settings = exportSettings()
+    const dataStr = JSON.stringify(settings, null, 2)
+    const dataBlob = new Blob([dataStr], { type: 'application/json' })
+    const url = URL.createObjectURL(dataBlob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `dsk-analyzer-settings-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  const handleImportSettings = async (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+
+    try {
+      const text = await file.text()
+      const settings = JSON.parse(text)
+      const success = importSettings(settings)
+      
+      if (success) {
+        await reanalyzeData()
+        alert('Настройките бяха успешно импортирани!')
+      } else {
+        alert('Грешка при импортиране на настройките.')
+      }
+    } catch (error) {
+      alert('Невалиден файл с настройки.')
+      console.error('Error importing settings:', error)
+    }
+    
+    // Reset file input
+    event.target.value = ''
   }
 
   const getCustomMappings = () => {
@@ -294,6 +376,11 @@ function App() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         {selectedView === 'month' ? 'Месец' : 'Търговец'}
                       </th>
+                      {selectedView === 'business' && (
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Група
+                        </th>
+                      )}
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Сума
                       </th>
@@ -333,6 +420,40 @@ function App() {
                             </div>
                           )}
                         </td>
+                        {selectedView === 'business' && (
+                          <td className="px-6 py-4">
+                            {editingGroup === item.name ? (
+                              <select
+                                value={selectedGroup}
+                                onChange={(e) => setSelectedGroup(e.target.value)}
+                                onBlur={() => handleSaveGroup(item.name)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') handleSaveGroup(item.name)
+                                  if (e.key === 'Escape') {
+                                    setEditingGroup(null)
+                                    setSelectedGroup('')
+                                  }
+                                }}
+                                autoFocus
+                                className="w-full px-2 py-1 border border-indigo-500 rounded focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                              >
+                                {getAllGroups().map((group) => (
+                                  <option key={group} value={group}>
+                                    {group}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              <button
+                                onClick={() => handleEditGroup(item)}
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
+                              >
+                                <Tag size={12} />
+                                {item.group}
+                              </button>
+                            )}
+                          </td>
+                        )}
                         <td className="px-6 py-4 text-right">
                           <span className="font-semibold text-red-600">
                             {formatCurrency(item.amount)}
@@ -403,6 +524,40 @@ function App() {
                           </button>
                         )}
                       </div>
+                      {selectedView === 'business' && (
+                        <div className="mb-2">
+                          {editingGroup === item.name ? (
+                            <select
+                              value={selectedGroup}
+                              onChange={(e) => setSelectedGroup(e.target.value)}
+                              onBlur={() => handleSaveGroup(item.name)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleSaveGroup(item.name)
+                                if (e.key === 'Escape') {
+                                  setEditingGroup(null)
+                                  setSelectedGroup('')
+                                }
+                              }}
+                              autoFocus
+                              className="w-full px-2 py-1 border border-indigo-500 rounded focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                            >
+                              {getAllGroups().map((group) => (
+                                <option key={group} value={group}>
+                                  {group}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <button
+                              onClick={() => handleEditGroup(item)}
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
+                            >
+                              <Tag size={12} />
+                              {item.group}
+                            </button>
+                          )}
+                        </div>
+                      )}
                       <div className="flex items-center justify-between gap-4 text-sm flex-wrap">
                         <span className="text-gray-600 whitespace-nowrap">
                           {item.transactions.length} транзакции
@@ -418,7 +573,7 @@ function App() {
             </div>
 
             {/* Upload New File Button */}
-            <div className="mt-6 text-center">
+            <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center items-center">
               <label>
                 <input type="file" accept=".xml" onChange={handleFileUpload} className="hidden" />
                 <span className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg cursor-pointer transition-colors">
@@ -426,88 +581,221 @@ function App() {
                   Качи нов файл
                 </span>
               </label>
+              
+              <button
+                onClick={() => setShowSettings(!showSettings)}
+                className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              >
+                <FolderOpen size={18} />
+                {showSettings ? 'Скрий настройки' : 'Настройки'}
+              </button>
+
+              <button
+                onClick={handleExportSettings}
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              >
+                <Download size={18} />
+                Експорт
+              </button>
+
+              <label>
+                <input type="file" accept=".json" onChange={handleImportSettings} className="hidden" />
+                <span className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg cursor-pointer transition-colors">
+                  <Upload size={18} />
+                  Импорт
+                </span>
+              </label>
             </div>
 
-            {/* Custom Mappings Table */}
-            {Object.keys(getCustomMappings()).length > 0 && (
-              <div className="mt-8 bg-white rounded-lg shadow overflow-hidden">
-                <div className="bg-indigo-50 border-b border-indigo-100 px-4 sm:px-6 py-4">
-                  <h3 className="text-lg font-semibold text-indigo-900">Персонализирани имена</h3>
-                  <p className="text-sm text-indigo-700 mt-1">
-                    Вашите собствени преименувания (запазени локално)
-                  </p>
+            {/* Settings Panel */}
+            {showSettings && (
+              <div className="mt-8 space-y-6">
+                {/* Custom Groups Management */}
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                  <div className="bg-purple-50 border-b border-purple-100 px-4 sm:px-6 py-4">
+                    <h3 className="text-lg font-semibold text-purple-900">Персонализирани групи</h3>
+                    <p className="text-sm text-purple-700 mt-1">
+                      Създайте собствени групи за класификация на разходите
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 sm:p-6">
+                    {/* Add New Group */}
+                    <div className="flex gap-2 mb-4">
+                      <input
+                        type="text"
+                        value={newGroupName}
+                        onChange={(e) => setNewGroupName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleAddCustomGroup()
+                        }}
+                        placeholder="Име на нова група..."
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                      />
+                      <button
+                        onClick={handleAddCustomGroup}
+                        className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                      >
+                        <Plus size={18} />
+                        Добави
+                      </button>
+                    </div>
+
+                    {/* List of Custom Groups */}
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Всички групи:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {getAllGroups().map((group) => {
+                          const isCustom = !['Храна', 'Жилище', 'Битови', 'Транспорт', 'Развлечения', 'Здраве', 'Облекло', 'Други'].includes(group)
+                          return (
+                            <div
+                              key={group}
+                              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
+                                isCustom
+                                  ? 'bg-purple-100 text-purple-800'
+                                  : 'bg-gray-100 text-gray-700'
+                              }`}
+                            >
+                              <Tag size={14} />
+                              {group}
+                              {isCustom && (
+                                <button
+                                  onClick={() => handleDeleteCustomGroup(group)}
+                                  className="ml-1 text-purple-600 hover:text-purple-900 transition-colors"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Desktop Table */}
-                <div className="hidden md:block overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Оригинално име
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Персонализирано име
-                        </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Действия
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
+                {/* Business-Group Mappings */}
+                {Object.keys(getBusinessGroupMappings()).length > 0 && (
+                  <div className="bg-white rounded-lg shadow overflow-hidden">
+                    <div className="bg-green-50 border-b border-green-100 px-4 sm:px-6 py-4">
+                      <h3 className="text-lg font-semibold text-green-900">Асоциации търговец-група</h3>
+                      <p className="text-sm text-green-700 mt-1">
+                        Вашите персонализирани групи за всеки търговец
+                      </p>
+                    </div>
+                    
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Търговец
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Група
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {Object.entries(getBusinessGroupMappings()).map(([business, group]) => (
+                            <tr key={business} className="hover:bg-gray-50 transition-colors">
+                              <td className="px-6 py-4 text-sm text-gray-900">{business}</td>
+                              <td className="px-6 py-4">
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                  <Tag size={12} />
+                                  {group}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Custom Mappings Table */}
+                {Object.keys(getCustomMappings()).length > 0 && (
+                  <div className="bg-white rounded-lg shadow overflow-hidden">
+                    <div className="bg-indigo-50 border-b border-indigo-100 px-4 sm:px-6 py-4">
+                      <h3 className="text-lg font-semibold text-indigo-900">Персонализирани имена</h3>
+                      <p className="text-sm text-indigo-700 mt-1">
+                        Вашите собствени преименувания (запазени локално)
+                      </p>
+                    </div>
+
+                    {/* Desktop Table */}
+                    <div className="hidden md:block overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Оригинално име
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Персонализирано име
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Действия
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {Object.entries(getCustomMappings()).map(([original, mapped]) => (
+                            <tr key={original} className="hover:bg-gray-50 transition-colors">
+                              <td className="px-6 py-4 text-sm text-gray-600">{original}</td>
+                              <td className="px-6 py-4">
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                                  {mapped}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-center">
+                                <button
+                                  onClick={() => handleDeleteMapping(original)}
+                                  className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 transition-colors"
+                                  title="Изтрий преименуване"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Mobile Card View */}
+                    <div className="md:hidden divide-y divide-gray-200">
                       {Object.entries(getCustomMappings()).map(([original, mapped]) => (
-                        <tr key={original} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-6 py-4 text-sm text-gray-600">{original}</td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
-                              {mapped}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-center">
+                        <div key={original} className="p-4 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-start justify-between gap-3 mb-2">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                                Оригинално
+                              </p>
+                              <p className="text-sm text-gray-900 break-words">{original}</p>
+                            </div>
                             <button
                               onClick={() => handleDeleteMapping(original)}
-                              className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 transition-colors"
+                              className="p-2 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                               title="Изтрий преименуване"
                             >
                               <Trash2 size={16} />
                             </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Mobile Card View */}
-                <div className="md:hidden divide-y divide-gray-200">
-                  {Object.entries(getCustomMappings()).map(([original, mapped]) => (
-                    <div key={original} className="p-4 hover:bg-gray-50 transition-colors">
-                      <div className="flex items-start justify-between gap-3 mb-2">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                            Оригинално
-                          </p>
-                          <p className="text-sm text-gray-900 break-words">{original}</p>
+                          </div>
+                          <div className="mt-3">
+                            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                              Персонализирано
+                            </p>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                              {mapped}
+                            </span>
+                          </div>
                         </div>
-                        <button
-                          onClick={() => handleDeleteMapping(original)}
-                          className="p-2 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
-                          title="Изтрий преименуване"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                      <div className="mt-3">
-                        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                          Персонализирано
-                        </p>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
-                          {mapped}
-                        </span>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
             )}
           </>

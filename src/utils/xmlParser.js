@@ -9,6 +9,28 @@ export const defaultBusinessMapping = {
   TECHNOPOLIS: 'Technopolis'
 }
 
+// Default groups
+export const defaultGroups = [
+  'Храна',
+  'Жилище',
+  'Битови',
+  'Транспорт',
+  'Развлечения',
+  'Здраве',
+  'Облекло',
+  'Други'
+]
+
+// Default business-to-group mappings
+export const defaultBusinessGroupMapping = {
+  Lidl: 'Храна',
+  Kaufland: 'Храна',
+  Billa: 'Храна',
+  Shell: 'Транспорт',
+  "Domino's Pizza": 'Храна',
+  Technopolis: 'Битови'
+}
+
 // Get custom mappings from localStorage
 export function getCustomMappings() {
   const stored = localStorage.getItem('customBusinessMappings')
@@ -20,6 +42,114 @@ export function saveCustomMapping(originalName, newName) {
   const customMappings = getCustomMappings()
   customMappings[originalName] = newName
   localStorage.setItem('customBusinessMappings', JSON.stringify(customMappings))
+}
+
+// Get custom groups from localStorage
+export function getCustomGroups() {
+  const stored = localStorage.getItem('customGroups')
+  return stored ? JSON.parse(stored) : []
+}
+
+// Save custom group to localStorage
+export function saveCustomGroup(groupName) {
+  const customGroups = getCustomGroups()
+  if (!customGroups.includes(groupName)) {
+    customGroups.push(groupName)
+    localStorage.setItem('customGroups', JSON.stringify(customGroups))
+  }
+}
+
+// Delete custom group
+export function deleteCustomGroup(groupName) {
+  const customGroups = getCustomGroups().filter((g) => g !== groupName)
+  localStorage.setItem('customGroups', JSON.stringify(customGroups))
+
+  // Also remove any business-group mappings using this group
+  const businessGroupMappings = getBusinessGroupMappings()
+  Object.keys(businessGroupMappings).forEach((business) => {
+    if (businessGroupMappings[business] === groupName) {
+      delete businessGroupMappings[business]
+    }
+  })
+  localStorage.setItem('businessGroupMappings', JSON.stringify(businessGroupMappings))
+}
+
+// Get all groups (default + custom)
+export function getAllGroups() {
+  return [...defaultGroups, ...getCustomGroups()]
+}
+
+// Get business-to-group mappings from localStorage
+export function getBusinessGroupMappings() {
+  const stored = localStorage.getItem('businessGroupMappings')
+  return stored ? JSON.parse(stored) : {}
+}
+
+// Save business-to-group mapping
+export function saveBusinessGroupMapping(businessName, groupName) {
+  const mappings = getBusinessGroupMappings()
+  mappings[businessName] = groupName
+  localStorage.setItem('businessGroupMappings', JSON.stringify(mappings))
+}
+
+// Get group for a business
+export function getBusinessGroup(businessName) {
+  const customMappings = getBusinessGroupMappings()
+  if (customMappings[businessName]) {
+    return customMappings[businessName]
+  }
+
+  if (defaultBusinessGroupMapping[businessName]) {
+    return defaultBusinessGroupMapping[businessName]
+  }
+
+  return 'Други'
+}
+
+// Export all settings to a JSON object
+export function exportSettings() {
+  return {
+    version: '1.0',
+    customBusinessMappings: getCustomMappings(),
+    customGroups: getCustomGroups(),
+    businessGroupMappings: getBusinessGroupMappings(),
+    exportDate: new Date().toISOString()
+  }
+}
+
+// Import settings from a JSON object
+export function importSettings(settingsData) {
+  try {
+    if (!settingsData.version) {
+      throw new Error('Invalid settings file format')
+    }
+
+    // Import custom business mappings
+    if (settingsData.customBusinessMappings) {
+      localStorage.setItem(
+        'customBusinessMappings',
+        JSON.stringify(settingsData.customBusinessMappings)
+      )
+    }
+
+    // Import custom groups
+    if (settingsData.customGroups) {
+      localStorage.setItem('customGroups', JSON.stringify(settingsData.customGroups))
+    }
+
+    // Import business-group mappings
+    if (settingsData.businessGroupMappings) {
+      localStorage.setItem(
+        'businessGroupMappings',
+        JSON.stringify(settingsData.businessGroupMappings)
+      )
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error importing settings:', error)
+    return false
+  }
 }
 
 // Get all mappings (default + custom)
@@ -134,6 +264,7 @@ export async function analyzeXML(xmlContent) {
         businessData[businessName] = {
           name: businessName,
           originalNames: [oppositeSideName], // Track all original names
+          group: getBusinessGroup(businessName),
           amount: 0,
           transactions: []
         }
