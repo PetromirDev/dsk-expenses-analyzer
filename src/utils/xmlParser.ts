@@ -1,8 +1,18 @@
 import xml2js from 'xml2js'
 import merchantsConfig from '../data/merchants.json'
+import type {
+  MerchantDatabase,
+  CustomMappings,
+  BusinessGroupMappings,
+  SettingsData,
+  AnalysisResult,
+  Transaction,
+  MonthlySpending,
+  BusinessSpending
+} from '../types'
 
 // Transliteration map for Bulgarian Cyrillic to Latin
-const transliterationMap = {
+const transliterationMap: Record<string, string> = {
   А: 'A',
   Б: 'B',
   В: 'V',
@@ -36,7 +46,7 @@ const transliterationMap = {
 }
 
 // Function to normalize text (transliterate Cyrillic and uppercase)
-function normalizeText(text) {
+function normalizeText(text: string): string {
   if (!text) return ''
   return text
     .toUpperCase()
@@ -47,15 +57,15 @@ function normalizeText(text) {
 }
 
 // Build merchant database from JSON config
-export const merchantDatabase = Object.values(merchantsConfig)
+export const merchantDatabase: MerchantDatabase = Object.values(merchantsConfig)
   .flat()
   .reduce((acc, merchant) => {
     acc[merchant.id] = merchant
     return acc
-  }, {})
+  }, {} as MerchantDatabase)
 
 // Legacy mapping for backward compatibility
-export const defaultBusinessMapping = {
+export const defaultBusinessMapping: Record<string, string> = {
   LIDL: 'Lidl',
   KAUFLAND: 'Kaufland',
   BILLA: 'Billa',
@@ -65,7 +75,7 @@ export const defaultBusinessMapping = {
 }
 
 // Default groups
-export const defaultGroups = [
+export const defaultGroups: string[] = [
   'Храна',
   'Техника',
   'Жилище',
@@ -80,35 +90,37 @@ export const defaultGroups = [
 ]
 
 // Build defaultBusinessGroupMapping from merchantDatabase
-export const defaultBusinessGroupMapping = Object.values(merchantDatabase).reduce(
+export const defaultBusinessGroupMapping: Record<string, string> = Object.values(
+  merchantDatabase
+).reduce(
   (acc, merchant) => {
     acc[merchant.name] = merchant.category
     return acc
   },
-  {}
+  {} as Record<string, string>
 )
 
 // Get custom mappings from localStorage
-export function getCustomMappings() {
+export function getCustomMappings(): CustomMappings {
   const stored = localStorage.getItem('customBusinessMappings')
   return stored ? JSON.parse(stored) : {}
 }
 
 // Save custom mappings to localStorage
-export function saveCustomMapping(originalName, newName) {
+export function saveCustomMapping(originalName: string, newName: string): void {
   const customMappings = getCustomMappings()
   customMappings[originalName] = newName
   localStorage.setItem('customBusinessMappings', JSON.stringify(customMappings))
 }
 
 // Get custom groups from localStorage
-export function getCustomGroups() {
+export function getCustomGroups(): string[] {
   const stored = localStorage.getItem('customGroups')
   return stored ? JSON.parse(stored) : []
 }
 
 // Save custom group to localStorage
-export function saveCustomGroup(groupName) {
+export function saveCustomGroup(groupName: string): void {
   const customGroups = getCustomGroups()
   if (!customGroups.includes(groupName)) {
     customGroups.push(groupName)
@@ -117,7 +129,7 @@ export function saveCustomGroup(groupName) {
 }
 
 // Delete custom group
-export function deleteCustomGroup(groupName) {
+export function deleteCustomGroup(groupName: string): void {
   const customGroups = getCustomGroups().filter((g) => g !== groupName)
   localStorage.setItem('customGroups', JSON.stringify(customGroups))
 
@@ -132,25 +144,25 @@ export function deleteCustomGroup(groupName) {
 }
 
 // Get all groups (default + custom)
-export function getAllGroups() {
+export function getAllGroups(): string[] {
   return [...defaultGroups, ...getCustomGroups()]
 }
 
 // Get business-to-group mappings from localStorage
-export function getBusinessGroupMappings() {
+export function getBusinessGroupMappings(): BusinessGroupMappings {
   const stored = localStorage.getItem('businessGroupMappings')
   return stored ? JSON.parse(stored) : {}
 }
 
 // Save business-to-group mapping
-export function saveBusinessGroupMapping(businessName, groupName) {
+export function saveBusinessGroupMapping(businessName: string, groupName: string): void {
   const mappings = getBusinessGroupMappings()
   mappings[businessName] = groupName
   localStorage.setItem('businessGroupMappings', JSON.stringify(mappings))
 }
 
 // Get group for a business
-export function getBusinessGroup(businessName) {
+export function getBusinessGroup(businessName: string): string {
   const customMappings = getBusinessGroupMappings()
   if (customMappings[businessName]) {
     return customMappings[businessName]
@@ -164,7 +176,7 @@ export function getBusinessGroup(businessName) {
 }
 
 // Export all settings to a JSON object
-export function exportSettings() {
+export function exportSettings(): SettingsData {
   return {
     version: '1.0',
     customBusinessMappings: getCustomMappings(),
@@ -175,7 +187,7 @@ export function exportSettings() {
 }
 
 // Import settings from a JSON object
-export function importSettings(settingsData) {
+export function importSettings(settingsData: SettingsData): boolean {
   try {
     if (!settingsData.version) {
       throw new Error('Invalid settings file format')
@@ -210,23 +222,23 @@ export function importSettings(settingsData) {
 }
 
 // Get all mappings (default + custom)
-export function getAllMappings() {
+export function getAllMappings(): Record<string, string> {
   return { ...defaultBusinessMapping, ...getCustomMappings() }
 }
 
 // Function to parse amount from string format (e.g., "18,20" -> 18.20)
-export function parseAmount(amountStr) {
+export function parseAmount(amountStr: string): number {
   return parseFloat(amountStr.replace(',', '.'))
 }
 
 // Function to parse date from DD.MM.YYYY format
-export function parseDate(dateStr) {
+export function parseDate(dateStr: string): Date {
   const [day, month, year] = dateStr.split('.')
-  return new Date(year, month - 1, day)
+  return new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
 }
 
 // Enhanced function to get human-readable business name with transliteration and fuzzy matching
-export function getBusinessName(oppositeSideName) {
+export function getBusinessName(oppositeSideName: string): string {
   if (!oppositeSideName || oppositeSideName.trim() === '') {
     return 'Без име'
   }
@@ -273,7 +285,7 @@ export function getBusinessName(oppositeSideName) {
 }
 
 // Helper function to clean up business names that don't have mappings
-function cleanBusinessName(name) {
+function cleanBusinessName(name: string): string {
   // Remove country codes (BGR, LUX, DEU, FRA, USA, etc.)
   let cleaned = name.replace(/^[A-Z]{3}\s+/i, '')
 
@@ -363,12 +375,12 @@ function cleanBusinessName(name) {
 }
 
 // Function to format currency
-export function formatCurrency(amount) {
+export function formatCurrency(amount: number): string {
   return `${amount.toFixed(2)} лв.`
 }
 
 // Function to get month-year key for grouping
-export function getMonthYear(date) {
+export function getMonthYear(date: Date): string {
   const monthNames = [
     'Януари',
     'Февруари',
@@ -387,7 +399,7 @@ export function getMonthYear(date) {
 }
 
 // Main function to parse and analyze XML
-export async function analyzeXML(xmlContent) {
+export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
   const parser = new xml2js.Parser()
   const result = await parser.parseStringPromise(xmlContent)
 
@@ -396,12 +408,12 @@ export async function analyzeXML(xmlContent) {
   // Initialize counters and aggregators
   let totalSpent = 0
   let totalIncome = 0
-  const monthlyData = {}
-  const businessData = {}
-  const transactions = []
+  const monthlyData: Record<string, MonthlySpending> = {}
+  const businessData: Record<string, BusinessSpending> = {}
+  const transactions: Transaction[] = []
 
   // Process each movement
-  movements.forEach((movement) => {
+  movements.forEach((movement: any) => {
     const amount = parseAmount(movement.Amount[0])
     const date = parseDate(movement.ValueDate[0])
     const oppositeSideName = movement.OppositeSideName[0]
@@ -409,7 +421,7 @@ export async function analyzeXML(xmlContent) {
     const businessName = getBusinessName(oppositeSideName)
     const monthYear = getMonthYear(date)
 
-    const transaction = {
+    const transaction: Transaction = {
       date: movement.ValueDate[0],
       dateObj: date,
       amount,
@@ -462,7 +474,7 @@ export async function analyzeXML(xmlContent) {
 
   // Convert to arrays and sort
   const monthlySpending = Object.values(monthlyData).sort(
-    (a, b) => b.transactions[0].dateObj - a.transactions[0].dateObj
+    (a, b) => b.transactions[0].dateObj.getTime() - a.transactions[0].dateObj.getTime()
   )
 
   const businessSpending = Object.values(businessData).sort((a, b) => b.amount - a.amount)
@@ -473,6 +485,6 @@ export async function analyzeXML(xmlContent) {
     netBalance: totalIncome - totalSpent,
     monthlySpending,
     businessSpending,
-    transactions: transactions.sort((a, b) => b.dateObj - a.dateObj)
+    transactions: transactions.sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime())
   }
 }

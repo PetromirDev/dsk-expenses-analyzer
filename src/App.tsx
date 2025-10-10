@@ -1,8 +1,20 @@
-import { useState } from 'react'
-import { Upload, Search, Edit2, Github, Shield, Database, Trash2, Download, FolderOpen, Plus, Tag } from 'lucide-react'
-import { 
-  analyzeXML, 
-  formatCurrency, 
+import { useState, ChangeEvent } from 'react'
+import {
+  Upload,
+  Search,
+  Edit2,
+  Github,
+  Shield,
+  Database,
+  Trash2,
+  Download,
+  FolderOpen,
+  Plus,
+  Tag
+} from 'lucide-react'
+import {
+  analyzeXML,
+  formatCurrency,
   saveCustomMapping,
   getAllGroups,
   saveCustomGroup,
@@ -12,26 +24,32 @@ import {
   importSettings,
   getBusinessGroupMappings
 } from './utils/xmlParser'
+import type { AnalysisResult, BusinessSpending, MonthlySpending, CustomMappings } from './types'
+
+// Type guard function
+function isBusinessSpending(item: MonthlySpending | BusinessSpending): item is BusinessSpending {
+  return 'name' in item && 'group' in item
+}
 
 function App() {
-  const [data, setData] = useState(null)
-  const [selectedView, setSelectedView] = useState('month') // 'month' or 'business'
+  const [data, setData] = useState<AnalysisResult | null>(null)
+  const [selectedView, setSelectedView] = useState<'month' | 'business'>('month')
   const [searchTerm, setSearchTerm] = useState('')
-  const [editingBusiness, setEditingBusiness] = useState(null)
+  const [editingBusiness, setEditingBusiness] = useState<string | null>(null)
   const [editValue, setEditValue] = useState('')
-  const [xmlContent, setXmlContent] = useState(null) // Store XML for re-parsing
-  const [editingGroup, setEditingGroup] = useState(null)
+  const [xmlContent, setXmlContent] = useState<string | null>(null)
+  const [editingGroup, setEditingGroup] = useState<string | null>(null)
   const [selectedGroup, setSelectedGroup] = useState('')
   const [showSettings, setShowSettings] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0]
+  const handleFileUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
     if (!file) return
 
     try {
       const text = await file.text()
-      setXmlContent(text) // Store the XML
+      setXmlContent(text)
       const result = await analyzeXML(text)
       setData(result)
     } catch (error) {
@@ -63,13 +81,13 @@ function App() {
     }
   }
 
-  const handleEditBusiness = (businessItem) => {
+  const handleEditBusiness = (businessItem: BusinessSpending) => {
     setEditingBusiness(businessItem.name)
     setEditValue(businessItem.name)
   }
 
   const handleSaveEdit = async () => {
-    if (!editingBusiness || !editValue.trim()) return
+    if (!editingBusiness || !editValue.trim() || !data) return
 
     const newName = editValue.trim()
     const businessItem = data.businessSpending.find((b) => b.name === editingBusiness)
@@ -88,21 +106,21 @@ function App() {
     setEditValue('')
   }
 
-  const handleDeleteMapping = (originalName) => {
+  const handleDeleteMapping = (originalName: string) => {
     const customMappings = getCustomMappings()
     delete customMappings[originalName]
     localStorage.setItem('customBusinessMappings', JSON.stringify(customMappings))
     reanalyzeData()
   }
 
-  const handleEditGroup = (businessItem) => {
+  const handleEditGroup = (businessItem: BusinessSpending) => {
     setEditingGroup(businessItem.name)
     setSelectedGroup(businessItem.group)
   }
 
-  const handleSaveGroup = async (businessName) => {
+  const handleSaveGroup = async (businessName: string) => {
     if (!selectedGroup) return
-    
+
     saveBusinessGroupMapping(businessName, selectedGroup)
     await reanalyzeData()
     setEditingGroup(null)
@@ -111,13 +129,13 @@ function App() {
 
   const handleAddCustomGroup = () => {
     if (!newGroupName.trim()) return
-    
+
     saveCustomGroup(newGroupName.trim())
     setNewGroupName('')
     reanalyzeData()
   }
 
-  const handleDeleteCustomGroup = (groupName) => {
+  const handleDeleteCustomGroup = (groupName: string) => {
     if (window.confirm(`Сигурни ли сте, че искате да изтриете групата "${groupName}"?`)) {
       deleteCustomGroup(groupName)
       reanalyzeData()
@@ -138,15 +156,15 @@ function App() {
     URL.revokeObjectURL(url)
   }
 
-  const handleImportSettings = async (event) => {
-    const file = event.target.files[0]
+  const handleImportSettings = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
     if (!file) return
 
     try {
       const text = await file.text()
       const settings = JSON.parse(text)
       const success = importSettings(settings)
-      
+
       if (success) {
         await reanalyzeData()
         alert('Настройките бяха успешно импортирани!')
@@ -157,12 +175,12 @@ function App() {
       alert('Невалиден файл с настройки.')
       console.error('Error importing settings:', error)
     }
-    
+
     // Reset file input
     event.target.value = ''
   }
 
-  const getCustomMappings = () => {
+  const getCustomMappings = (): CustomMappings => {
     const stored = localStorage.getItem('customBusinessMappings')
     return stored ? JSON.parse(stored) : {}
   }
@@ -175,7 +193,14 @@ function App() {
     if (!searchTerm.trim()) return dataSource
 
     return dataSource.filter((item) => {
-      const searchIn = selectedView === 'month' ? item.month : item.name
+      const searchIn =
+        selectedView === 'month'
+          ? 'month' in item
+            ? item.month
+            : ''
+          : 'name' in item
+            ? item.name
+            : ''
       return searchIn.toLowerCase().includes(searchTerm.toLowerCase())
     })
   }
@@ -197,7 +222,9 @@ function App() {
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
               <Github size={20} />
-              <span className="hidden lg:inline">Source Code (за да питаш ChatGPT дали има вируси)</span>
+              <span className="hidden lg:inline">
+                Source Code (за да питаш ChatGPT дали има вируси)
+              </span>
             </a>
           </div>
         </div>
@@ -285,7 +312,9 @@ function App() {
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
                       6
                     </span>
-                    <span>Изтеглете файла във формат <strong>XML</strong></span>
+                    <span>
+                      Изтеглете файла във формат <strong>XML</strong>
+                    </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
@@ -311,7 +340,7 @@ function App() {
                       Избери файл
                     </span>
                   </label>
-                  
+
                   <button
                     onClick={handleLoadDemo}
                     className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-6 rounded-lg inline-flex items-center gap-2 transition-colors"
@@ -421,40 +450,149 @@ function App() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {getFilteredData().map((item, index) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4">
-                          {editingBusiness === item.name ? (
-                            <input
-                              type="text"
-                              value={editValue}
-                              onChange={(e) => setEditValue(e.target.value)}
-                              onBlur={handleSaveEdit}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') handleSaveEdit()
-                                if (e.key === 'Escape') {
-                                  setEditingBusiness(null)
-                                  setEditValue('')
-                                }
-                              }}
-                              autoFocus
-                              className="w-full px-2 py-1 border border-indigo-500 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
-                            />
-                          ) : (
-                            <div className="font-medium text-gray-900">
-                              {selectedView === 'month' ? item.month : item.name}
-                            </div>
-                          )}
-                        </td>
-                        {selectedView === 'business' && (
+                    {getFilteredData().map((item, index) => {
+                      const itemName = isBusinessSpending(item) ? item.name : item.month
+                      const itemGroup = isBusinessSpending(item) ? item.group : undefined
+
+                      return (
+                        <tr key={index} className="hover:bg-gray-50 transition-colors">
                           <td className="px-6 py-4">
-                            {editingGroup === item.name ? (
+                            {selectedView === 'business' && editingBusiness === itemName ? (
+                              <input
+                                type="text"
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                onBlur={handleSaveEdit}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') handleSaveEdit()
+                                  if (e.key === 'Escape') {
+                                    setEditingBusiness(null)
+                                    setEditValue('')
+                                  }
+                                }}
+                                autoFocus
+                                className="w-full px-2 py-1 border border-indigo-500 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                              />
+                            ) : (
+                              <div className="font-medium text-gray-900">{itemName}</div>
+                            )}
+                          </td>
+                          {selectedView === 'business' && (
+                            <td className="px-6 py-4">
+                              {editingGroup === itemName ? (
+                                <select
+                                  value={selectedGroup}
+                                  onChange={(e) => setSelectedGroup(e.target.value)}
+                                  onBlur={() => handleSaveGroup(itemName)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleSaveGroup(itemName)
+                                    if (e.key === 'Escape') {
+                                      setEditingGroup(null)
+                                      setSelectedGroup('')
+                                    }
+                                  }}
+                                  autoFocus
+                                  className="w-full px-2 py-1 border border-indigo-500 rounded focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                >
+                                  {getAllGroups().map((group) => (
+                                    <option key={group} value={group}>
+                                      {group}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <button
+                                  onClick={() => isBusinessSpending(item) && handleEditGroup(item)}
+                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
+                                >
+                                  <Tag size={12} />
+                                  {itemGroup}
+                                </button>
+                              )}
+                            </td>
+                          )}
+                          <td className="px-6 py-4 text-right">
+                            <span className="font-semibold text-red-600">
+                              {formatCurrency(item.amount)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right text-gray-600">
+                            {item.transactions.length}
+                          </td>
+                          {selectedView === 'business' && (
+                            <td className="px-6 py-4 text-center">
+                              <button
+                                onClick={() => isBusinessSpending(item) && handleEditBusiness(item)}
+                                disabled={editingBusiness !== null}
+                                className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <Edit2 size={16} />
+                              </button>
+                            </td>
+                          )}
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+
+                {getFilteredData().length === 0 && (
+                  <div className="text-center py-12 text-gray-500">Няма намерени резултати</div>
+                )}
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-gray-200">
+                {getFilteredData().length === 0 ? (
+                  <div className="text-center py-12 text-gray-500">Няма намерени резултати</div>
+                ) : (
+                  getFilteredData().map((item, index) => {
+                    const itemName = isBusinessSpending(item) ? item.name : item.month
+                    const itemGroup = isBusinessSpending(item) ? item.group : undefined
+
+                    return (
+                      <div key={index} className="p-4 hover:bg-gray-50 transition-colors">
+                        <div className="flex items-start justify-between gap-2 mb-3">
+                          <div className="flex-1 min-w-0 pr-2">
+                            {selectedView === 'business' && editingBusiness === itemName ? (
+                              <input
+                                type="text"
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                onBlur={handleSaveEdit}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') handleSaveEdit()
+                                  if (e.key === 'Escape') {
+                                    setEditingBusiness(null)
+                                    setEditValue('')
+                                  }
+                                }}
+                                autoFocus
+                                className="w-full px-2 py-1 border border-indigo-500 rounded focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                              />
+                            ) : (
+                              <h3 className="font-medium text-gray-900 break-words">{itemName}</h3>
+                            )}
+                          </div>
+                          {selectedView === 'business' && (
+                            <button
+                              onClick={() => isBusinessSpending(item) && handleEditBusiness(item)}
+                              disabled={editingBusiness !== null}
+                              className="flex-shrink-0 p-2 text-indigo-600 hover:text-indigo-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <Edit2 size={16} />
+                            </button>
+                          )}
+                        </div>
+                        {selectedView === 'business' && (
+                          <div className="mb-2">
+                            {editingGroup === itemName ? (
                               <select
                                 value={selectedGroup}
                                 onChange={(e) => setSelectedGroup(e.target.value)}
-                                onBlur={() => handleSaveGroup(item.name)}
+                                onBlur={() => handleSaveGroup(itemName)}
                                 onKeyDown={(e) => {
-                                  if (e.key === 'Enter') handleSaveGroup(item.name)
+                                  if (e.key === 'Enter') handleSaveGroup(itemName)
                                   if (e.key === 'Escape') {
                                     setEditingGroup(null)
                                     setSelectedGroup('')
@@ -471,129 +609,26 @@ function App() {
                               </select>
                             ) : (
                               <button
-                                onClick={() => handleEditGroup(item)}
+                                onClick={() => isBusinessSpending(item) && handleEditGroup(item)}
                                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
                               >
                                 <Tag size={12} />
-                                {item.group}
+                                {itemGroup}
                               </button>
                             )}
-                          </td>
+                          </div>
                         )}
-                        <td className="px-6 py-4 text-right">
-                          <span className="font-semibold text-red-600">
+                        <div className="flex items-center justify-between gap-4 text-sm flex-wrap">
+                          <span className="text-gray-600 whitespace-nowrap">
+                            {item.transactions.length} транзакции
+                          </span>
+                          <span className="font-semibold text-red-600 text-base break-all">
                             {formatCurrency(item.amount)}
                           </span>
-                        </td>
-                        <td className="px-6 py-4 text-right text-gray-600">
-                          {item.transactions.length}
-                        </td>
-                        {selectedView === 'business' && (
-                          <td className="px-6 py-4 text-center">
-                            <button
-                              onClick={() => handleEditBusiness(item)}
-                              disabled={editingBusiness !== null}
-                              className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              <Edit2 size={16} />
-                            </button>
-                          </td>
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                {getFilteredData().length === 0 && (
-                  <div className="text-center py-12 text-gray-500">Няма намерени резултати</div>
-                )}
-              </div>
-
-              {/* Mobile Card View */}
-              <div className="md:hidden divide-y divide-gray-200">
-                {getFilteredData().length === 0 ? (
-                  <div className="text-center py-12 text-gray-500">Няма намерени резултати</div>
-                ) : (
-                  getFilteredData().map((item, index) => (
-                    <div key={index} className="p-4 hover:bg-gray-50 transition-colors">
-                      <div className="flex items-start justify-between gap-2 mb-3">
-                        <div className="flex-1 min-w-0 pr-2">
-                          {editingBusiness === item.name ? (
-                            <input
-                              type="text"
-                              value={editValue}
-                              onChange={(e) => setEditValue(e.target.value)}
-                              onBlur={handleSaveEdit}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') handleSaveEdit()
-                                if (e.key === 'Escape') {
-                                  setEditingBusiness(null)
-                                  setEditValue('')
-                                }
-                              }}
-                              autoFocus
-                              className="w-full px-2 py-1 border border-indigo-500 rounded focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                            />
-                          ) : (
-                            <h3 className="font-medium text-gray-900 break-words">
-                              {selectedView === 'month' ? item.month : item.name}
-                            </h3>
-                          )}
                         </div>
-                        {selectedView === 'business' && (
-                          <button
-                            onClick={() => handleEditBusiness(item)}
-                            disabled={editingBusiness !== null}
-                            className="flex-shrink-0 p-2 text-indigo-600 hover:text-indigo-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            <Edit2 size={16} />
-                          </button>
-                        )}
                       </div>
-                      {selectedView === 'business' && (
-                        <div className="mb-2">
-                          {editingGroup === item.name ? (
-                            <select
-                              value={selectedGroup}
-                              onChange={(e) => setSelectedGroup(e.target.value)}
-                              onBlur={() => handleSaveGroup(item.name)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') handleSaveGroup(item.name)
-                                if (e.key === 'Escape') {
-                                  setEditingGroup(null)
-                                  setSelectedGroup('')
-                                }
-                              }}
-                              autoFocus
-                              className="w-full px-2 py-1 border border-indigo-500 rounded focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                            >
-                              {getAllGroups().map((group) => (
-                                <option key={group} value={group}>
-                                  {group}
-                                </option>
-                              ))}
-                            </select>
-                          ) : (
-                            <button
-                              onClick={() => handleEditGroup(item)}
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
-                            >
-                              <Tag size={12} />
-                              {item.group}
-                            </button>
-                          )}
-                        </div>
-                      )}
-                      <div className="flex items-center justify-between gap-4 text-sm flex-wrap">
-                        <span className="text-gray-600 whitespace-nowrap">
-                          {item.transactions.length} транзакции
-                        </span>
-                        <span className="font-semibold text-red-600 text-base break-all">
-                          {formatCurrency(item.amount)}
-                        </span>
-                      </div>
-                    </div>
-                  ))
+                    )
+                  })
                 )}
               </div>
             </div>
@@ -607,7 +642,7 @@ function App() {
                   Качи нов файл
                 </span>
               </label>
-              
+
               <button
                 onClick={() => setShowSettings(!showSettings)}
                 className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
@@ -625,7 +660,12 @@ function App() {
               </button>
 
               <label>
-                <input type="file" accept=".json" onChange={handleImportSettings} className="hidden" />
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImportSettings}
+                  className="hidden"
+                />
                 <span className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg cursor-pointer transition-colors">
                   <Upload size={18} />
                   Импорт
@@ -644,7 +684,7 @@ function App() {
                       Създайте собствени групи за класификация на разходите
                     </p>
                   </div>
-                  
+
                   <div className="p-4 sm:p-6">
                     {/* Add New Group */}
                     <div className="flex gap-2 mb-4">
@@ -672,7 +712,16 @@ function App() {
                       <h4 className="text-sm font-medium text-gray-700 mb-2">Всички групи:</h4>
                       <div className="flex flex-wrap gap-2">
                         {getAllGroups().map((group) => {
-                          const isCustom = !['Храна', 'Жилище', 'Битови', 'Транспорт', 'Развлечения', 'Здраве', 'Облекло', 'Други'].includes(group)
+                          const isCustom = ![
+                            'Храна',
+                            'Жилище',
+                            'Битови',
+                            'Транспорт',
+                            'Развлечения',
+                            'Здраве',
+                            'Облекло',
+                            'Други'
+                          ].includes(group)
                           return (
                             <div
                               key={group}
@@ -704,12 +753,14 @@ function App() {
                 {Object.keys(getBusinessGroupMappings()).length > 0 && (
                   <div className="bg-white rounded-lg shadow overflow-hidden">
                     <div className="bg-green-50 border-b border-green-100 px-4 sm:px-6 py-4">
-                      <h3 className="text-lg font-semibold text-green-900">Асоциации търговец-група</h3>
+                      <h3 className="text-lg font-semibold text-green-900">
+                        Асоциации търговец-група
+                      </h3>
                       <p className="text-sm text-green-700 mt-1">
                         Вашите персонализирани групи за всеки търговец
                       </p>
                     </div>
-                    
+
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead className="bg-gray-50 border-b border-gray-200">
@@ -744,7 +795,9 @@ function App() {
                 {Object.keys(getCustomMappings()).length > 0 && (
                   <div className="bg-white rounded-lg shadow overflow-hidden">
                     <div className="bg-indigo-50 border-b border-indigo-100 px-4 sm:px-6 py-4">
-                      <h3 className="text-lg font-semibold text-indigo-900">Персонализирани имена</h3>
+                      <h3 className="text-lg font-semibold text-indigo-900">
+                        Персонализирани имена
+                      </h3>
                       <p className="text-sm text-indigo-700 mt-1">
                         Вашите собствени преименувания (запазени локално)
                       </p>
