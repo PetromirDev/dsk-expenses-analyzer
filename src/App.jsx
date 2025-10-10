@@ -40,6 +40,22 @@ function App() {
     }
   }
 
+  const handleLoadDemo = async () => {
+    try {
+      const response = await fetch('/sample.xml')
+      if (!response.ok) {
+        throw new Error('Failed to load demo file')
+      }
+      const text = await response.text()
+      setXmlContent(text)
+      const result = await analyzeXML(text)
+      setData(result)
+    } catch (error) {
+      alert('Грешка при зареждане наDemo файла.')
+      console.error('Error loading demo:', error)
+    }
+  }
+
   const reanalyzeData = async () => {
     if (xmlContent) {
       const result = await analyzeXML(xmlContent)
@@ -282,18 +298,28 @@ function App() {
 
               {/* Upload Button */}
               <div className="text-center">
-                <label className="inline-block">
-                  <input
-                    type="file"
-                    accept=".xml"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                  <span className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg cursor-pointer inline-flex items-center gap-2 transition-colors">
-                    <Database size={20} />
-                    Избери файл
-                  </span>
-                </label>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                  <label className="inline-block">
+                    <input
+                      type="file"
+                      accept=".xml"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                    <span className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg cursor-pointer inline-flex items-center gap-2 transition-colors">
+                      <Database size={20} />
+                      Избери файл
+                    </span>
+                  </label>
+                  
+                  <button
+                    onClick={handleLoadDemo}
+                    className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-6 rounded-lg inline-flex items-center gap-2 transition-colors"
+                  >
+                    <Upload size={20} />
+                    Demo
+                  </button>
+                </div>
               </div>
             </div>
           </div>
