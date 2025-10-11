@@ -53,6 +53,36 @@
       "patterns": ["EKOMARKET", "EKO MARKET", "ЕКОМАРКЕТ"],
       "name": "Ekomarket",
       "category": "Храна"
+    },
+    {
+      "id": "burlex",
+      "patterns": ["BURLEX", "БУРЛЕКС"],
+      "name": "Burlex",
+      "category": "Храна"
+    },
+    {
+      "id": "moyatmagazin",
+      "patterns": ["MOYAT MAGAZIN", "МОЯТ МАГАЗИН"],
+      "name": "Моят Магазин",
+      "category": "Храна"
+    },
+    {
+      "id": "minimarket",
+      "patterns": ["MINI MARKET", "МИНИ МАРКЕТ"],
+      "name": "Mini Market",
+      "category": "Храна"
+    },
+    {
+      "id": "minimart",
+      "patterns": ["MINI MART", "МИНИ МАРТ"],
+      "name": "Mini Mart",
+      "category": "Храна"
+    },
+    {
+      "id": "mymarket",
+      "patterns": ["MY MARKET", "МАЙ МАРКЕТ"],
+      "name": "My Market",
+      "category": "Храна"
     }
   ],
   "tech": [
@@ -211,6 +241,18 @@
       "patterns": ["Its Vinetki", "Винетки", "Vinetki", "VINETKI"],
       "name": "Vinetka",
       "category": "Транспорт"
+    },
+    {
+      "id": "benita",
+      "patterns": ["BENITA", "БЕНИТА"],
+      "name": "Benita",
+      "category": "Транспорт"
+    },
+    {
+      "id": "kruiz",
+      "patterns": ["KRUIZ", "КРУИЗ"],
+      "name": "Kruiz",
+      "category": "Транспорт"
     }
   ],
   "restaurants": [
@@ -248,6 +290,12 @@
       "id": "subway",
       "patterns": ["SUBWAY", "СЪБУЕЙ"],
       "name": "Subway",
+      "category": "Ресторанти"
+    },
+    {
+      "id": "godzilla",
+      "patterns": ["GODZILLA", "ГОДЗИЛА"],
+      "name": "Godzilla",
       "category": "Ресторанти"
     }
   ],
@@ -340,6 +388,18 @@
       "patterns": ["EBAY", "ИБЕЙ"],
       "name": "eBay",
       "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "temu",
+      "patterns": ["TEMU", "ТЕМУ"],
+      "name": "Temu",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "shein",
+      "patterns": ["SHEIN", "ШЕЙН"],
+      "name": "Shein",
+      "category": "Онлайн пазаруване"
     }
   ],
   "travel": [
@@ -414,6 +474,12 @@
       "id": "bricolage",
       "patterns": ["MR BRICOLAGE", "MR.BRICOLAGE", "БРИКОЛАЖ"],
       "name": "Mr. Bricolage",
+      "category": "Жилище"
+    },
+    {
+      "id": "pepco",
+      "patterns": ["PEPCO", "ПЕПКО"],
+      "name": "Pepco",
       "category": "Жилище"
     },
     {
@@ -493,6 +559,65 @@
       "patterns": ["EPAY", "ЕПЕЙ"],
       "name": "ePay",
       "category": "Битови"
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "hbo",
+      "patterns": ["HBO", "HBO MAX"],
+      "name": "HBO",
+      "category": "Абонаменти",
+      "canBeSubscription": true
+    },
+    {
+      "id": "netflix",
+      "patterns": ["NETFLIX"],
+      "name": "Netflix",
+      "category": "Абонаменти",
+      "canBeSubscription": true
+    },
+    {
+      "id": "disney",
+      "patterns": ["DISNEY"],
+      "name": "Disney+",
+      "category": "Абонаменти",
+      "canBeSubscription": true
+    },
+    {
+      "id": "spotify",
+      "patterns": ["SPOTIFY"],
+      "name": "Spotify",
+      "category": "Абонаменти",
+      "canBeSubscription": true
+    },
+    {
+      "id": "github",
+      "patterns": ["GITHUB"],
+      "name": "GitHub",
+      "category": "Абонаменти",
+      "canBeSubscription": true
+    }
+  ],
+  "coffee": [
+    {
+      "id": "starbucks",
+      "patterns": ["STARBUCKS", "СТАРБЪКС"],
+      "name": "Starbucks",
+      "category": "Кафе"
+    },
+    {
+      "id": "costa",
+      "patterns": ["COSTA", "КОСТА"],
+      "name": "Costa Coffee",
+      "category": "Кафе"
+    }
+  ],
+  "sports": [
+    {
+      "id": "decathlon",
+      "patterns": ["DECATHLON", "ДЕКАТЛОН", "DEKATLON"],
+      "name": "Decathlon",
+      "category": "Спорт"
     }
   ]
 }
