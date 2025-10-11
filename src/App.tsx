@@ -1,5 +1,5 @@
 import { useState, ChangeEvent } from 'react'
-import { getAllGroups, getBusinessGroupMappings } from './utils/xmlParser'
+import { getAllGroups, getBusinessGroupMappings, getCustomGroups } from './utils/xmlParser'
 import { useXMLData } from './hooks/useXMLData'
 import { useBusinessEditor } from './hooks/useBusinessEditor'
 import { useGroupEditor } from './hooks/useGroupEditor'
@@ -96,8 +96,11 @@ function App() {
   }
 
   const handleSaveNewGroup = () => {
-    groupEditor.addCustomGroup()
-    groupEditor.setNewGroupName('')
+    const success = groupEditor.addCustomGroup()
+    if (success) {
+      groupEditor.setNewGroupName('')
+    }
+    return success
   }
 
   return (
@@ -262,6 +265,8 @@ function App() {
                 onFileUpload={handleFileUpload}
                 onExportSettings={settings.handleExportSettings}
                 onImportSettings={handleImportSettings}
+                customGroups={getCustomGroups()}
+                onDeleteGroup={groupEditor.deleteGroup}
               />
             )}
           </>

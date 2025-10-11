@@ -9,6 +9,8 @@ export interface SettingsPanelProps {
   onFileUpload: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
   onExportSettings: () => void
   onImportSettings: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
+  customGroups: string[]
+  onDeleteGroup: (groupName: string) => void
 }
 
 export function SettingsPanel({
@@ -17,7 +19,9 @@ export function SettingsPanel({
   businessGroupMappings,
   onFileUpload,
   onExportSettings,
-  onImportSettings
+  onImportSettings,
+  customGroups,
+  onDeleteGroup
 }: SettingsPanelProps) {
   return (
     <div className="space-y-6">
@@ -58,6 +62,52 @@ export function SettingsPanel({
         </div>
       </div>
 
+      {/* Custom Groups Table */}
+      {customGroups.length > 0 && (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-yellow-50 border-b border-yellow-100 px-4 sm:px-6 py-4">
+            <h3 className="text-lg font-semibold text-yellow-900">Персонализирани групи</h3>
+            <p className="text-sm text-yellow-700 mt-1">Вашите собствени групи</p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Име на групата
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Действия
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {customGroups.map((group) => (
+                  <tr key={group} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <Tag size={12} />
+                        {group}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        onClick={() => onDeleteGroup(group)}
+                        className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 transition-colors"
+                        title="Изтрий група"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {/* Business-Group Mappings */}
       {Object.keys(businessGroupMappings).length > 0 && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -75,7 +125,7 @@ export function SettingsPanel({
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Търговец
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Група
                   </th>
                 </tr>
@@ -84,7 +134,7 @@ export function SettingsPanel({
                 {Object.entries(businessGroupMappings).map(([business, group]) => (
                   <tr key={business} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 text-sm text-gray-900">{business}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-right">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         <Tag size={12} />
                         {group}
@@ -119,7 +169,7 @@ export function SettingsPanel({
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Персонализирано име
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Действия
                   </th>
                 </tr>
@@ -133,7 +183,7 @@ export function SettingsPanel({
                         {mapped}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => onDeleteMapping(original)}
                         className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 transition-colors"

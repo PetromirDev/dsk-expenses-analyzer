@@ -1,5 +1,11 @@
 import { useState } from 'react'
-import { saveBusinessGroupMapping, saveCustomGroup, deleteCustomGroup } from '../utils/xmlParser'
+import { toast } from 'sonner'
+import {
+  saveBusinessGroupMapping,
+  saveCustomGroup,
+  deleteCustomGroup,
+  getAllGroups
+} from '../utils/xmlParser'
 import type { BusinessSpending } from '../types'
 
 export function useGroupEditor(reanalyzeData: () => Promise<void>) {
@@ -22,23 +28,33 @@ export function useGroupEditor(reanalyzeData: () => Promise<void>) {
   }
 
   const addCustomGroup = () => {
-    if (!newGroupName.trim()) return
+    const trimmedName = newGroupName.trim()
+    if (!trimmedName) return false
 
-    saveCustomGroup(newGroupName.trim())
+    const allGroups = getAllGroups()
+    if (allGroups.some((g) => g.toLowerCase() === trimmedName.toLowerCase())) {
+      toast.error(`Група с името "${trimmedName}" вече съществува.`)
+      return false
+    }
+
+    saveCustomGroup(trimmedName)
+    toast.success(`Групата "${trimmedName}" беше добавена успешно.`)
     setNewGroupName('')
     reanalyzeData()
-  }
-
-  const deleteGroup = (groupName: string) => {
-    if (window.confirm(`Сигурни ли сте, че искате да изтриете групата "${groupName}"?`)) {
-      deleteCustomGroup(groupName)
-      reanalyzeData()
-    }
+    return true
   }
 
   const cancelGroupEdit = () => {
     setEditingGroup(null)
     setSelectedGroup('')
+  }
+
+  const deleteGroup = (groupName: string) => {
+    if (window.confirm(`Сигурни ли сте, че искате да изтриете групата "${groupName}"?`)) {
+      deleteCustomGroup(groupName)
+      toast.success(`Групата "${groupName}" беше изтрита успешно.`)
+      reanalyzeData()
+    }
   }
 
   return {
@@ -50,7 +66,7 @@ export function useGroupEditor(reanalyzeData: () => Promise<void>) {
     startGroupEdit,
     saveGroup,
     addCustomGroup,
-    deleteGroup,
-    cancelGroupEdit
+    cancelGroupEdit,
+    deleteGroup
   }
 }

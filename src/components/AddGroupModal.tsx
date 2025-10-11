@@ -17,7 +17,7 @@ interface AddGroupModalProps {
   onClose: () => void
   groupName: string
   onGroupNameChange: (value: string) => void
-  onSave: () => void
+  onSave: () => boolean // Return boolean to indicate success
 }
 
 export function AddGroupModal({
@@ -29,7 +29,10 @@ export function AddGroupModal({
 }: AddGroupModalProps) {
   const handleSave = () => {
     if (groupName.trim()) {
-      onSave()
+      const success = onSave()
+      if (success) {
+        onClose()
+      }
     }
   }
 
