@@ -1,4 +1,5 @@
 import { useState, ChangeEvent } from 'react'
+import { Search } from 'lucide-react'
 import { getAllGroups, getBusinessGroupMappings } from './utils/xmlParser'
 import { useXMLData } from './hooks/useXMLData'
 import { useBusinessEditor } from './hooks/useBusinessEditor'
@@ -10,14 +11,14 @@ import { Header } from './components/Header'
 import { InfoBanner } from './components/InfoBanner'
 import { UploadSection } from './components/UploadSection'
 import { SummaryCards } from './components/SummaryCards'
-import { Controls } from './components/Controls'
 import { DataTable } from './components/DataTable'
 import { ActionButtons } from './components/ActionButtons'
 import { SettingsPanel } from './components/SettingsPanel'
+import { SubscriptionsTab } from './components/SubscriptionsTab'
 import { Footer } from './components/Footer'
 
 function App() {
-  const [selectedView, setSelectedView] = useState<'month' | 'business'>('month')
+  const [activeTab, setActiveTab] = useState<'month' | 'business' | 'subscriptions'>('month')
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   // Custom hooks
@@ -70,8 +71,8 @@ function App() {
   // Get filtered data
   const getFilteredData = () => {
     if (!data) return []
-    const dataSource = selectedView === 'month' ? data.monthlySpending : data.businessSpending
-    return filterData(dataSource, searchTerm, selectedView)
+    const dataSource = activeTab === 'month' ? data.monthlySpending : data.businessSpending
+    return filterData(dataSource, searchTerm, activeTab === 'month' ? 'month' : 'business')
   }
 
   return (
@@ -93,30 +94,119 @@ function App() {
               netBalance={data.netBalance}
             />
 
-            <Controls
-              selectedView={selectedView}
-              onViewChange={setSelectedView}
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-            />
+            {/* Tab Navigation & Search - Single Compact Row */}
+            <div className="bg-white rounded-lg shadow p-4 mb-6">
+              <div className="flex flex-wrap gap-4 items-center justify-between">
+                {/* Tabs */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setActiveTab('month')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                      activeTab === 'month'
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    По месеци
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('business')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                      activeTab === 'business'
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    По търговци
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('subscriptions')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                      activeTab === 'subscriptions'
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    Абонаменти
+                    {data.subscriptions.length > 0 && (
+                      <span
+                        className={`ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium ${
+                          activeTab === 'subscriptions'
+                            ? 'bg-white text-indigo-600'
+                            : 'bg-indigo-100 text-indigo-700'
+                        }`}
+                      >
+                        {data.subscriptions.length}
+                      </span>
+                    )}
+                  </button>
+                </div>
 
-            <DataTable
-              data={getFilteredData()}
-              selectedView={selectedView}
-              editingBusiness={businessEditor.editingBusiness}
-              editValue={businessEditor.editValue}
-              onEditValueChange={businessEditor.setEditValue}
-              onSaveEdit={() => businessEditor.saveEdit(data.businessSpending)}
-              onCancelEdit={businessEditor.cancelEdit}
-              onStartEdit={businessEditor.startEdit}
-              editingGroup={groupEditor.editingGroup}
-              selectedGroup={groupEditor.selectedGroup}
-              onGroupChange={groupEditor.setSelectedGroup}
-              onSaveGroup={groupEditor.saveGroup}
-              onCancelGroupEdit={groupEditor.cancelGroupEdit}
-              onStartGroupEdit={groupEditor.startGroupEdit}
-              allGroups={getAllGroups()}
-            />
+                {/* Search - only show on transaction tabs */}
+                {activeTab !== 'subscriptions' && (
+                  <div className="relative w-full sm:w-64">
+                    <Search
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={18}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Търсене..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Monthly Transactions Tab */}
+            {activeTab === 'month' && (
+              <DataTable
+                data={getFilteredData()}
+                selectedView="month"
+                editingBusiness={businessEditor.editingBusiness}
+                editValue={businessEditor.editValue}
+                onEditValueChange={businessEditor.setEditValue}
+                onSaveEdit={() => businessEditor.saveEdit(data.businessSpending)}
+                onCancelEdit={businessEditor.cancelEdit}
+                onStartEdit={businessEditor.startEdit}
+                editingGroup={groupEditor.editingGroup}
+                selectedGroup={groupEditor.selectedGroup}
+                onGroupChange={groupEditor.setSelectedGroup}
+                onSaveGroup={groupEditor.saveGroup}
+                onCancelGroupEdit={groupEditor.cancelGroupEdit}
+                onStartGroupEdit={groupEditor.startGroupEdit}
+                allGroups={getAllGroups()}
+              />
+            )}
+
+            {/* Business Transactions Tab */}
+            {activeTab === 'business' && (
+              <DataTable
+                data={getFilteredData()}
+                selectedView="business"
+                editingBusiness={businessEditor.editingBusiness}
+                editValue={businessEditor.editValue}
+                onEditValueChange={businessEditor.setEditValue}
+                onSaveEdit={() => businessEditor.saveEdit(data.businessSpending)}
+                onCancelEdit={businessEditor.cancelEdit}
+                onStartEdit={businessEditor.startEdit}
+                editingGroup={groupEditor.editingGroup}
+                selectedGroup={groupEditor.selectedGroup}
+                onGroupChange={groupEditor.setSelectedGroup}
+                onSaveGroup={groupEditor.saveGroup}
+                onCancelGroupEdit={groupEditor.cancelGroupEdit}
+                onStartGroupEdit={groupEditor.startGroupEdit}
+                allGroups={getAllGroups()}
+              />
+            )}
+
+            {/* Subscriptions Tab */}
+            {activeTab === 'subscriptions' && (
+              <SubscriptionsTab subscriptions={data.subscriptions} />
+            )}
 
             <ActionButtons
               onFileUpload={handleFileUpload}

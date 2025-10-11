@@ -16,6 +16,7 @@ export interface Transaction {
   dateObj: Date
   amount: number
   oppositeSideName: string
+  oppositeSideAccount: string
   businessName: string
   movementType: 'Debit' | 'Credit'
   monthYear: string
@@ -42,6 +43,7 @@ export interface AnalysisResult {
   netBalance: number
   monthlySpending: MonthlySpending[]
   businessSpending: BusinessSpending[]
+  subscriptions: Subscription[]
   transactions: Transaction[]
   unmappedBusinesses?: string[]
 }
@@ -64,4 +66,21 @@ export interface SettingsData {
 
 export interface MerchantDatabase {
   [id: string]: Merchant
+}
+
+export interface SubscriptionPayment {
+  date: Date
+  amount: number
+  monthYear: string
+  transaction: Transaction
+}
+
+export interface Subscription {
+  businessName: string
+  payments: SubscriptionPayment[]
+  averageAmount: number
+  isActive: boolean
+  firstPayment: Date
+  lastPayment: Date
+  consecutiveMonths: number
 }

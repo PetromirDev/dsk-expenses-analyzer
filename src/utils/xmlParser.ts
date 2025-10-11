@@ -8,7 +8,9 @@ import type {
   AnalysisResult,
   Transaction,
   MonthlySpending,
-  BusinessSpending
+  BusinessSpending,
+  Subscription,
+  SubscriptionPayment
 } from '../types'
 
 // Transliteration map for Bulgarian Cyrillic to Latin
@@ -398,6 +400,182 @@ export function getMonthYear(date: Date): string {
   return `${monthNames[date.getMonth()]} ${date.getFullYear()}`
 }
 
+// Function to detect potential subscriptions
+function detectSubscriptions(transactions: Transaction[]): Subscription[] {
+  const THRESHOLD_PERCENTAGE = 0.05 // 5% threshold
+  const subscriptions: Subscription[] = []
+
+  // Filter only Debit transactions without OppositeSideAccount (not bank transfers)
+  const eligibleTransactions = transactions.filter(
+    (t) =>
+      t.movementType === 'Debit' && (!t.oppositeSideAccount || t.oppositeSideAccount.trim() === '')
+  )
+
+  // Group by business name
+  const businessGroups: Record<string, Transaction[]> = {}
+  eligibleTransactions.forEach((t) => {
+    if (!businessGroups[t.businessName]) {
+      businessGroups[t.businessName] = []
+    }
+    businessGroups[t.businessName].push(t)
+  })
+
+  // Analyze each business for subscription patterns
+  Object.entries(businessGroups).forEach(([businessName, txns]) => {
+    // Need at least 2 transactions to detect a pattern
+    if (txns.length < 2) return
+
+    // Sort by date (oldest first)
+    const sortedTxns = [...txns].sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime())
+
+    // Group transactions by month-year
+    const monthlyTxns: Record<string, Transaction[]> = {}
+    sortedTxns.forEach((t) => {
+      const monthKey = `${t.dateObj.getFullYear()}-${String(t.dateObj.getMonth() + 1).padStart(2, '0')}`
+      if (!monthlyTxns[monthKey]) {
+        monthlyTxns[monthKey] = []
+      }
+      monthlyTxns[monthKey].push(t)
+    })
+
+    // Get sorted month keys
+    const monthKeys = Object.keys(monthlyTxns).sort()
+
+    // Find consecutive month sequences with similar amounts AND same day of month (±1 day)
+    let currentSequence: SubscriptionPayment[] = []
+    let lastAmount: number | null = null
+    let lastMonthKey: string | null = null
+    let lastDayOfMonth: number | null = null
+
+    monthKeys.forEach((monthKey) => {
+      // Use the first transaction of the month for subscription detection
+      const monthTxn = monthlyTxns[monthKey][0]
+      const currentAmount = monthTxn.amount
+      const currentDayOfMonth = monthTxn.dateObj.getDate()
+
+      if (lastAmount === null) {
+        // First transaction in potential sequence
+        currentSequence = [
+          {
+            date: monthTxn.dateObj,
+            amount: currentAmount,
+            monthYear: monthTxn.monthYear,
+            transaction: monthTxn
+          }
+        ]
+        lastAmount = currentAmount
+        lastMonthKey = monthKey
+        lastDayOfMonth = currentDayOfMonth
+      } else {
+        // Check if this month is consecutive
+        const [lastYear, lastMonth] = lastMonthKey!.split('-').map(Number)
+        const [currentYear, currentMonth] = monthKey.split('-').map(Number)
+
+        const lastDate = new Date(lastYear, lastMonth - 1)
+        const currentDate = new Date(currentYear, currentMonth - 1)
+        const monthDiff =
+          (currentDate.getFullYear() - lastDate.getFullYear()) * 12 +
+          (currentDate.getMonth() - lastDate.getMonth())
+
+        const isConsecutive = monthDiff === 1
+
+        // Check if day of month is within ±1 day tolerance
+        const dayDifference = Math.abs(currentDayOfMonth - lastDayOfMonth!)
+        const isSameDayOfMonth = dayDifference <= 1
+
+        if (isConsecutive && isSameDayOfMonth) {
+          // Check if amount is within threshold
+          const threshold = lastAmount * THRESHOLD_PERCENTAGE
+          const lowerBound = lastAmount - threshold
+          const upperBound = lastAmount + threshold
+
+          if (currentAmount >= lowerBound && currentAmount <= upperBound) {
+            // Add to current sequence
+            currentSequence.push({
+              date: monthTxn.dateObj,
+              amount: currentAmount,
+              monthYear: monthTxn.monthYear,
+              transaction: monthTxn
+            })
+            lastAmount = currentAmount // Update reference amount for next comparison
+            lastMonthKey = monthKey
+            lastDayOfMonth = currentDayOfMonth
+          } else {
+            // Amount outside threshold - end current sequence if it's valid
+            if (currentSequence.length >= 2) {
+              createSubscription(businessName, currentSequence, subscriptions)
+            }
+            // Start new sequence
+            currentSequence = [
+              {
+                date: monthTxn.dateObj,
+                amount: currentAmount,
+                monthYear: monthTxn.monthYear,
+                transaction: monthTxn
+              }
+            ]
+            lastAmount = currentAmount
+            lastMonthKey = monthKey
+            lastDayOfMonth = currentDayOfMonth
+          }
+        } else {
+          // Not consecutive or not same day - end current sequence if it's valid
+          if (currentSequence.length >= 2) {
+            createSubscription(businessName, currentSequence, subscriptions)
+          }
+          // Start new sequence
+          currentSequence = [
+            {
+              date: monthTxn.dateObj,
+              amount: currentAmount,
+              monthYear: monthTxn.monthYear,
+              transaction: monthTxn
+            }
+          ]
+          lastAmount = currentAmount
+          lastMonthKey = monthKey
+          lastDayOfMonth = currentDayOfMonth
+        }
+      }
+    })
+
+    // Check final sequence
+    if (currentSequence.length >= 2) {
+      createSubscription(businessName, currentSequence, subscriptions)
+    }
+  })
+
+  // Sort subscriptions by last payment date (most recent first)
+  return subscriptions.sort((a, b) => b.lastPayment.getTime() - a.lastPayment.getTime())
+}
+
+// Helper function to create a subscription from a payment sequence
+function createSubscription(
+  businessName: string,
+  payments: SubscriptionPayment[],
+  subscriptions: Subscription[]
+) {
+  const totalAmount = payments.reduce((sum, p) => sum + p.amount, 0)
+  const averageAmount = totalAmount / payments.length
+  const firstPayment = payments[0].date
+  const lastPayment = payments[payments.length - 1].date
+
+  // Check if subscription is active (last payment was within the last 45 days)
+  const now = new Date()
+  const daysSinceLastPayment = (now.getTime() - lastPayment.getTime()) / (1000 * 60 * 60 * 24)
+  const isActive = daysSinceLastPayment <= 45
+
+  subscriptions.push({
+    businessName,
+    payments,
+    averageAmount,
+    isActive,
+    firstPayment,
+    lastPayment,
+    consecutiveMonths: payments.length
+  })
+}
+
 // Main function to parse and analyze XML
 export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
   const parser = new xml2js.Parser()
@@ -417,6 +595,7 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
     const amount = parseAmount(movement.Amount[0])
     const date = parseDate(movement.ValueDate[0])
     const oppositeSideName = movement.OppositeSideName[0]
+    const oppositeSideAccount = movement.OppositeSideAccount?.[0] || ''
     const movementType = movement.MovementType[0]
     const businessName = getBusinessName(oppositeSideName)
     const monthYear = getMonthYear(date)
@@ -426,6 +605,7 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
       dateObj: date,
       amount,
       oppositeSideName,
+      oppositeSideAccount,
       businessName,
       movementType,
       monthYear,
@@ -479,12 +659,16 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
 
   const businessSpending = Object.values(businessData).sort((a, b) => b.amount - a.amount)
 
+  // Detect subscriptions
+  const subscriptions = detectSubscriptions(transactions)
+
   return {
     totalSpent,
     totalIncome,
     netBalance: totalIncome - totalSpent,
     monthlySpending,
     businessSpending,
+    subscriptions,
     transactions: transactions.sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime())
   }
 }
