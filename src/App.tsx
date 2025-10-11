@@ -104,7 +104,7 @@ function App() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header />
 
-      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <InfoBanner />
 
         {/* Upload Section */}
@@ -115,15 +115,15 @@ function App() {
           <>
             {/* Centered Tab Navigation */}
             <div className="bg-white rounded-lg shadow mb-6">
-              <div className="flex justify-center p-2">
-                <div className="inline-flex gap-1 p-1 bg-gray-100 rounded-lg">
+              <div className="flex justify-center p-2 overflow-x-auto">
+                <div className="inline-flex gap-1 p-1 bg-gray-100 rounded-lg min-w-max">
                   <button
                     onClick={() => {
                       setActiveTab('overview')
                       setSearchTerm('')
                       setFilterGroup('')
                     }}
-                    className={`px-6 py-2.5 rounded-md font-medium transition-all text-sm ${
+                    className={`px-2 sm:px-6 py-2 sm:py-2.5 rounded-md font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
                       activeTab === 'overview'
                         ? 'bg-white text-indigo-700 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
@@ -137,7 +137,7 @@ function App() {
                       setSearchTerm('')
                       setFilterGroup('')
                     }}
-                    className={`px-6 py-2.5 rounded-md font-medium transition-all text-sm ${
+                    className={`px-2 sm:px-6 py-2 sm:py-2.5 rounded-md font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
                       activeTab === 'business'
                         ? 'bg-white text-indigo-700 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
@@ -151,7 +151,7 @@ function App() {
                       setSearchTerm('')
                       setFilterGroup('')
                     }}
-                    className={`relative px-6 py-2.5 rounded-md font-medium transition-all text-sm ${
+                    className={`relative px-2 sm:px-6 py-2 sm:py-2.5 rounded-md font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
                       activeTab === 'subscriptions'
                         ? 'bg-white text-indigo-700 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
@@ -159,7 +159,7 @@ function App() {
                   >
                     Абонаменти
                     {data.subscriptions.length > 0 && (
-                      <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-indigo-600 rounded-full">
+                      <span className="ml-1 sm:ml-1.5 inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 text-[10px] sm:text-xs font-bold text-white bg-indigo-600 rounded-full">
                         {data.subscriptions.length}
                       </span>
                     )}
@@ -170,7 +170,7 @@ function App() {
                       setSearchTerm('')
                       setFilterGroup('')
                     }}
-                    className={`px-6 py-2.5 rounded-md font-medium transition-all text-sm ${
+                    className={`px-2 sm:px-6 py-2 sm:py-2.5 rounded-md font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
                       activeTab === 'settings'
                         ? 'bg-white text-indigo-700 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'

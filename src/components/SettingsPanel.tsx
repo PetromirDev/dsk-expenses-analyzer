@@ -34,8 +34,8 @@ export function SettingsPanel({
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Upload XML File */}
             <label className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer">
-              <Upload size={20} />
-              <span className="font-medium">Качи XML файл</span>
+              <Upload size={18} className="flex-shrink-0" />
+              <span className="font-medium text-sm sm:text-base">Качи XML файл</span>
               <input type="file" accept=".xml" onChange={onFileUpload} className="hidden" />
             </label>
 
@@ -44,14 +44,14 @@ export function SettingsPanel({
               onClick={onExportSettings}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
             >
-              <Download size={20} />
-              <span className="font-medium">Експорт на настройки</span>
+              <Download size={18} className="flex-shrink-0" />
+              <span className="font-medium text-sm sm:text-base">Експорт на настройки</span>
             </button>
 
             {/* Import Settings */}
             <label className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors cursor-pointer">
-              <FileUp size={20} />
-              <span className="font-medium">Импорт на настройки</span>
+              <FileUp size={18} className="flex-shrink-0" />
+              <span className="font-medium text-sm sm:text-base">Импорт на настройки</span>
               <input type="file" accept=".json" onChange={onImportSettings} className="hidden" />
             </label>
           </div>
