@@ -1,4 +1,5 @@
 import { useState, ChangeEvent } from 'react'
+import { toast } from 'sonner'
 import { getAllGroups, getBusinessGroupMappings, getCustomGroups } from './utils/xmlParser'
 import { useXMLData } from './hooks/useXMLData'
 import { useBusinessEditor } from './hooks/useBusinessEditor'
@@ -36,11 +37,11 @@ function App() {
     async (text) => {
       const result = await loadXML(text)
       if (!result.success) {
-        alert('Грешка при четене на файла. Моля, уверете се, че файлът е валиден XML от ДСК.')
+        toast.error('Грешка при четене на файла. Моля, уверете се, че файлът е валиден XML от ДСК.')
       }
     },
     (error) => {
-      alert('Грешка при четене на файла. Моля, уверете се, че файлът е валиден XML от ДСК.')
+      toast.error('Грешка при четене на файла. Моля, уверете се, че файлът е валиден XML от ДСК.')
       console.error('Error parsing XML:', error)
     }
   )
@@ -50,7 +51,7 @@ function App() {
       const text = await fetchDemoFile()
       await loadXML(text)
     } catch (error) {
-      alert('Грешка при зареждане на Demo файла.')
+      toast.error('Грешка при зареждане на Demo файла.')
       console.error('Error loading demo:', error)
     }
   }
@@ -62,9 +63,9 @@ function App() {
     try {
       const text = await file.text()
       const result = await settings.handleImportSettings(text)
-      alert(result.message)
+      toast.success(result.message)
     } catch (error) {
-      alert('Невалиден файл с настройки.')
+      toast.error('Невалиден файл с настройки.')
       console.error('Error importing settings:', error)
     }
 

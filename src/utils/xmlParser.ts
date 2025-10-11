@@ -17,6 +17,7 @@ import {
   calculateTotals,
   aggregateIncomeAndExpensesByMonth
 } from '../analyzers/aggregations'
+import { getCustomMappings as getMerchantCustomMappings } from '../services/merchantMatcher'
 
 // Re-export from services and utilities for backward compatibility
 export { merchantDatabase } from '../services/merchantMatcher'
@@ -120,10 +121,10 @@ export function getBusinessGroup(businessName: string): string {
 export function exportSettings(): SettingsData {
   return {
     version: '1.0',
-    customBusinessMappings: require('../services/merchantMatcher').getCustomMappings(),
-    customGroups: getCustomGroups(),
+    exportDate: new Date().toISOString(),
+    customBusinessMappings: getMerchantCustomMappings(),
     businessGroupMappings: getBusinessGroupMappings(),
-    exportDate: new Date().toISOString()
+    customGroups: getCustomGroups()
   }
 }
 
