@@ -6,7 +6,12 @@
 
 import type { AnalysisResult, Transaction } from '../types'
 import { detectSubscriptions } from '../analyzers/subscriptions'
-import { aggregateByMonth, aggregateByBusiness, calculateTotals } from '../analyzers/aggregations'
+import {
+  aggregateByMonth,
+  aggregateByBusiness,
+  calculateTotals,
+  aggregateIncomeAndExpensesByMonth
+} from '../analyzers/aggregations'
 import { getBusinessGroup } from '../utils/xmlParser'
 
 /**
@@ -24,6 +29,9 @@ export function recomputeAnalysis(transactions: Transaction[]): AnalysisResult {
   // Aggregate by month (fast - just grouping)
   const monthlySpending = aggregateByMonth(transactions)
 
+  // Aggregate income and expenses by month for chart
+  const monthlyChartData = aggregateIncomeAndExpensesByMonth(transactions)
+
   // Aggregate by business and enrich with group mappings (fast - just grouping)
   const businessSpending = aggregateByBusiness(transactions).map((business) => ({
     ...business,
@@ -40,7 +48,8 @@ export function recomputeAnalysis(transactions: Transaction[]): AnalysisResult {
     monthlySpending,
     businessSpending,
     subscriptions,
-    transactions
+    transactions,
+    monthlyChartData
   }
 }
 

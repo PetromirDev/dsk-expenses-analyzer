@@ -15,6 +15,7 @@ import { DataTable } from './components/DataTable'
 import { ActionButtons } from './components/ActionButtons'
 import { SettingsPanel } from './components/SettingsPanel'
 import { SubscriptionsTab } from './components/SubscriptionsTab'
+import { MonthlyChart } from './components/MonthlyChart'
 import { Footer } from './components/Footer'
 
 function App() {
@@ -163,23 +164,26 @@ function App() {
 
             {/* Monthly Transactions Tab */}
             {activeTab === 'month' && (
-              <DataTable
-                data={getFilteredData()}
-                selectedView="month"
-                editingBusiness={businessEditor.editingBusiness}
-                editValue={businessEditor.editValue}
-                onEditValueChange={businessEditor.setEditValue}
-                onSaveEdit={() => businessEditor.saveEdit(data.businessSpending)}
-                onCancelEdit={businessEditor.cancelEdit}
-                onStartEdit={businessEditor.startEdit}
-                editingGroup={groupEditor.editingGroup}
-                selectedGroup={groupEditor.selectedGroup}
-                onGroupChange={groupEditor.setSelectedGroup}
-                onSaveGroup={groupEditor.saveGroup}
-                onCancelGroupEdit={groupEditor.cancelGroupEdit}
-                onStartGroupEdit={groupEditor.startGroupEdit}
-                allGroups={getAllGroups()}
-              />
+              <>
+                <MonthlyChart data={data.monthlyChartData} />
+                <DataTable
+                  data={getFilteredData()}
+                  selectedView="month"
+                  editingBusiness={businessEditor.editingBusiness}
+                  editValue={businessEditor.editValue}
+                  onEditValueChange={businessEditor.setEditValue}
+                  onSaveEdit={() => businessEditor.saveEdit(data.businessSpending)}
+                  onCancelEdit={businessEditor.cancelEdit}
+                  onStartEdit={businessEditor.startEdit}
+                  editingGroup={groupEditor.editingGroup}
+                  selectedGroup={groupEditor.selectedGroup}
+                  onGroupChange={groupEditor.setSelectedGroup}
+                  onSaveGroup={groupEditor.saveGroup}
+                  onCancelGroupEdit={groupEditor.cancelGroupEdit}
+                  onStartGroupEdit={groupEditor.startGroupEdit}
+                  allGroups={getAllGroups()}
+                />
+              </>
             )}
 
             {/* Business Transactions Tab */}

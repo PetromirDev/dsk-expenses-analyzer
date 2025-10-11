@@ -11,7 +11,12 @@
 import type { BusinessGroupMappings, SettingsData, AnalysisResult, Transaction } from '../types'
 import { bankRegistry } from '../adapters/bankRegistry'
 import { detectSubscriptions } from '../analyzers/subscriptions'
-import { aggregateByMonth, aggregateByBusiness, calculateTotals } from '../analyzers/aggregations'
+import {
+  aggregateByMonth,
+  aggregateByBusiness,
+  calculateTotals,
+  aggregateIncomeAndExpensesByMonth
+} from '../analyzers/aggregations'
 
 // Re-export from services and utilities for backward compatibility
 export { merchantDatabase } from '../services/merchantMatcher'
@@ -183,6 +188,9 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
   // Aggregate by month
   const monthlySpending = aggregateByMonth(standardTransactions)
 
+  // Aggregate income and expenses by month for chart
+  const monthlyChartData = aggregateIncomeAndExpensesByMonth(standardTransactions)
+
   // Aggregate by business and enrich with group mappings
   const businessSpending = aggregateByBusiness(standardTransactions).map((business) => ({
     ...business,
@@ -204,6 +212,7 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
     monthlySpending,
     businessSpending,
     subscriptions,
-    transactions
+    transactions,
+    monthlyChartData
   }
 }

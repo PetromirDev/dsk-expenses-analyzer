@@ -39,6 +39,13 @@ export interface BusinessSpending {
   transactions: Transaction[]
 }
 
+export interface MonthlyChartData {
+  month: string
+  income: number
+  expenses: number
+  dateObj: Date
+}
+
 export interface AnalysisResult {
   totalSpent: number
   totalIncome: number
@@ -47,6 +54,7 @@ export interface AnalysisResult {
   businessSpending: BusinessSpending[]
   subscriptions: Subscription[]
   transactions: Transaction[]
+  monthlyChartData: MonthlyChartData[]
   unmappedBusinesses?: string[]
 }
 

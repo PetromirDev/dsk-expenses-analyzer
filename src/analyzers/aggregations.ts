@@ -37,6 +37,43 @@ export function aggregateByMonth(transactions: StandardTransaction[]): MonthlySp
 }
 
 /**
+ * Aggregate both income and expenses by month for charting
+ */
+export function aggregateIncomeAndExpensesByMonth(transactions: StandardTransaction[]): {
+  month: string
+  income: number
+  expenses: number
+  dateObj: Date
+}[] {
+  const monthlyData: Record<
+    string,
+    { month: string; income: number; expenses: number; dateObj: Date }
+  > = {}
+
+  transactions.forEach((t) => {
+    const monthYear = t.monthYear
+
+    if (!monthlyData[monthYear]) {
+      monthlyData[monthYear] = {
+        month: monthYear,
+        income: 0,
+        expenses: 0,
+        dateObj: t.dateObj
+      }
+    }
+
+    if (t.movementType === 'Credit') {
+      monthlyData[monthYear].income += t.amount
+    } else if (t.movementType === 'Debit') {
+      monthlyData[monthYear].expenses += t.amount
+    }
+  })
+
+  // Convert to array and sort by date (oldest first for charts)
+  return Object.values(monthlyData).sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime())
+}
+
+/**
  * Aggregate transactions by business
  */
 export function aggregateByBusiness(transactions: StandardTransaction[]): BusinessSpending[] {
