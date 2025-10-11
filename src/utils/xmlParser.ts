@@ -388,11 +388,29 @@ export function getMonthYear(date: Date): string {
   return `${monthNames[date.getMonth()]} ${date.getFullYear()}`
 }
 
+// Helper function to extract foreign currency amount from Reason field
+function extractForeignCurrency(
+  reason: string | undefined
+): { amount: number; currency: string } | null {
+  if (!reason || typeof reason !== 'string') return null
+
+  // Pattern: "NUMBER USD" or "NUMBER EUR"
+  const match = reason.match(/(\d+[,.]?\d*)\s*(USD|EUR)/i)
+
+  if (match) {
+    const amount = parseFloat(match[1].replace(',', '.'))
+    const currency = match[2].toUpperCase()
+    return { amount, currency }
+  }
+  return null
+}
+
 // Function to detect potential subscriptions
 function detectSubscriptions(transactions: Transaction[]): Subscription[] {
-  const PRICE_THRESHOLD_PERCENTAGE = 0.1
   const DATE_TOLERANCE_DAYS = 3
   const MINIMUM_CONSECUTIVE_MONTHS = 2
+  const BGN_PRICE_THRESHOLD_PERCENTAGE = 0.1 // Only for BGN transactions
+  const FOREIGN_CURRENCY_TOLERANCE = 0.02 // 2 cents tolerance for rounding
   const subscriptions: Subscription[] = []
 
   // Filter only Debit transactions without OppositeSideAccount (not bank transfers)
@@ -433,31 +451,42 @@ function detectSubscriptions(transactions: Transaction[]): Subscription[] {
     // Get sorted month keys
     const monthKeys = Object.keys(monthlyTxns).sort()
 
-    // Find consecutive month sequences with similar amounts AND same day of month (±1 day)
+    // Find consecutive month sequences with similar amounts AND same day of month (±3 days)
     let currentSequence: SubscriptionPayment[] = []
-    let lastAmount: number | null = null
+    let lastForeignCurrency: { amount: number; currency: string } | null = null
+    let lastBgnAmount: number | null = null
     let lastMonthKey: string | null = null
     let lastDayOfMonth: number | null = null
+    let lastTransaction: Transaction | null = null
 
     monthKeys.forEach((monthKey) => {
       // Use the first transaction of the month for subscription detection
-      const monthTxn = monthlyTxns[monthKey][0]
-      const currentAmount = monthTxn.amount
+      const monthTxn =
+        monthlyTxns[monthKey].find((t) =>
+          lastForeignCurrency
+            ? t.reason.includes(String(lastForeignCurrency.amount)) &&
+              t.reason.includes(lastForeignCurrency.currency)
+            : true
+        ) || monthlyTxns[monthKey][0]
+      const currentBgnAmount = monthTxn.amount
       const currentDayOfMonth = monthTxn.dateObj.getDate()
+      const currentForeignCurrency = extractForeignCurrency(monthTxn.reason)
 
-      if (lastAmount === null) {
+      if (lastTransaction === null) {
         // First transaction in potential sequence
         currentSequence = [
           {
             date: monthTxn.dateObj,
-            amount: currentAmount,
+            amount: currentBgnAmount,
             monthYear: monthTxn.monthYear,
             transaction: monthTxn
           }
         ]
-        lastAmount = currentAmount
+        lastForeignCurrency = currentForeignCurrency
+        lastBgnAmount = currentBgnAmount
         lastMonthKey = monthKey
         lastDayOfMonth = currentDayOfMonth
+        lastTransaction = monthTxn
       } else {
         // Check if this month is consecutive
         const [lastYear, lastMonth] = lastMonthKey!.split('-').map(Number)
@@ -471,44 +500,63 @@ function detectSubscriptions(transactions: Transaction[]): Subscription[] {
 
         const isConsecutive = monthDiff === 1
 
-        // Check if day of month is within ±1 day tolerance
+        // Check if day of month is within ±3 day tolerance
         const dayDifference = Math.abs(currentDayOfMonth - lastDayOfMonth!)
         const isWithinDaysThreshold = dayDifference <= DATE_TOLERANCE_DAYS
 
         if (isConsecutive && isWithinDaysThreshold) {
-          // Check if amount is within threshold
-          const threshold = lastAmount * PRICE_THRESHOLD_PERCENTAGE
-          const lowerBound = lastAmount - threshold
-          const upperBound = lastAmount + threshold
+          // Check if amounts match
+          let amountsMatch = false
 
-          if (currentAmount >= lowerBound && currentAmount <= upperBound) {
+          // If both have foreign currency and same currency, compare those
+          if (
+            currentForeignCurrency &&
+            lastForeignCurrency &&
+            currentForeignCurrency.currency === lastForeignCurrency.currency
+          ) {
+            const diff = Math.abs(currentForeignCurrency.amount - lastForeignCurrency.amount)
+            amountsMatch = diff <= FOREIGN_CURRENCY_TOLERANCE
+          } else if (!currentForeignCurrency && !lastForeignCurrency) {
+            // Both are BGN transactions, use threshold
+            const threshold = lastBgnAmount! * BGN_PRICE_THRESHOLD_PERCENTAGE
+            const lowerBound = lastBgnAmount! - threshold
+            const upperBound = lastBgnAmount! + threshold
+            amountsMatch = currentBgnAmount >= lowerBound && currentBgnAmount <= upperBound
+          }
+          // If one has foreign currency and other doesn't, they don't match (different transaction types)
+
+          if (amountsMatch) {
             // Add to current sequence
             currentSequence.push({
               date: monthTxn.dateObj,
-              amount: currentAmount,
+              amount: currentBgnAmount,
               monthYear: monthTxn.monthYear,
               transaction: monthTxn
             })
-            lastAmount = currentAmount // Update reference amount for next comparison
+            lastForeignCurrency = currentForeignCurrency
+            lastBgnAmount = currentBgnAmount
             lastMonthKey = monthKey
             lastDayOfMonth = currentDayOfMonth
+            lastTransaction = monthTxn
           } else {
             // Amount outside threshold - end current sequence if it's valid
-            if (currentSequence.length >= 2) {
+            if (currentSequence.length >= MINIMUM_CONSECUTIVE_MONTHS) {
               createSubscription(businessName, currentSequence, subscriptions)
             }
             // Start new sequence
             currentSequence = [
               {
                 date: monthTxn.dateObj,
-                amount: currentAmount,
+                amount: currentBgnAmount,
                 monthYear: monthTxn.monthYear,
                 transaction: monthTxn
               }
             ]
-            lastAmount = currentAmount
+            lastForeignCurrency = currentForeignCurrency
+            lastBgnAmount = currentBgnAmount
             lastMonthKey = monthKey
             lastDayOfMonth = currentDayOfMonth
+            lastTransaction = monthTxn
           }
         } else {
           // Not consecutive or not same day - end current sequence if it's valid
@@ -519,14 +567,16 @@ function detectSubscriptions(transactions: Transaction[]): Subscription[] {
           currentSequence = [
             {
               date: monthTxn.dateObj,
-              amount: currentAmount,
+              amount: currentBgnAmount,
               monthYear: monthTxn.monthYear,
               transaction: monthTxn
             }
           ]
-          lastAmount = currentAmount
+          lastForeignCurrency = currentForeignCurrency
+          lastBgnAmount = currentBgnAmount
           lastMonthKey = monthKey
           lastDayOfMonth = currentDayOfMonth
+          lastTransaction = monthTxn
         }
       }
     })
@@ -591,6 +641,8 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
     const movementType = movement.MovementType[0]
     const businessInfo = getBusinessInfo(oppositeSideName)
     const monthYear = getMonthYear(date)
+    const reason = movement.Reason[0] ?? ''
+    const reasonFormatted = typeof reason === 'string' ? reason : reason._ || ''
 
     const transaction: Transaction = {
       date: movement.ValueDate[0],
@@ -602,7 +654,7 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
       canBeSubscription: businessInfo.canBeSubscription,
       movementType,
       monthYear,
-      reason: movement.Reason[0]
+      reason: reasonFormatted
     }
 
     transactions.push(transaction)
