@@ -1,105 +1,59 @@
-import { Trash2, Plus, Tag } from 'lucide-react'
+import { Trash2, Tag, Upload, Download, FileUp } from 'lucide-react'
 import type { CustomMappings } from '../types'
+import { ChangeEvent } from 'react'
 
 export interface SettingsPanelProps {
-  showSettings: boolean
   customMappings: CustomMappings
   onDeleteMapping: (originalName: string) => void
-  newGroupName: string
-  onNewGroupNameChange: (name: string) => void
-  onAddCustomGroup: () => void
-  onDeleteCustomGroup: (groupName: string) => void
-  allGroups: string[]
   businessGroupMappings: Record<string, string>
+  onFileUpload: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
+  onExportSettings: () => void
+  onImportSettings: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
 }
 
 export function SettingsPanel({
-  showSettings,
   customMappings,
   onDeleteMapping,
-  newGroupName,
-  onNewGroupNameChange,
-  onAddCustomGroup,
-  onDeleteCustomGroup,
-  allGroups,
-  businessGroupMappings
+  businessGroupMappings,
+  onFileUpload,
+  onExportSettings,
+  onImportSettings
 }: SettingsPanelProps) {
-  if (!showSettings) return null
-
-  const defaultGroups = [
-    'Храна',
-    'Техника',
-    'Жилище',
-    'Битови',
-    'Транспорт',
-    'Развлечения',
-    'Ресторанти',
-    'Онлайн пазаруване',
-    'Здраве',
-    'Облекло',
-    'Други'
-  ]
-
   return (
-    <div className="mt-8 space-y-6">
-      {/* Custom Groups Management */}
+    <div className="space-y-6">
+      {/* File Actions */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="bg-purple-50 border-b border-purple-100 px-4 sm:px-6 py-4">
-          <h3 className="text-lg font-semibold text-purple-900">Персонализирани групи</h3>
-          <p className="text-sm text-purple-700 mt-1">
-            Създайте собствени групи за класификация на разходите
+        <div className="bg-blue-50 border-b border-blue-100 px-4 sm:px-6 py-4">
+          <h3 className="text-lg font-semibold text-blue-900">Файлове и настройки</h3>
+          <p className="text-sm text-blue-700 mt-1">
+            Качете XML файл или експортирайте/импортирайте настройките си
           </p>
         </div>
 
         <div className="p-4 sm:p-6">
-          {/* Add New Group */}
-          <div className="flex gap-2 mb-4">
-            <input
-              type="text"
-              value={newGroupName}
-              onChange={(e) => onNewGroupNameChange(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') onAddCustomGroup()
-              }}
-              placeholder="Име на нова група..."
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
-            />
-            <button
-              onClick={onAddCustomGroup}
-              className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-            >
-              <Plus size={18} />
-              Добави
-            </button>
-          </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Upload XML File */}
+            <label className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer">
+              <Upload size={20} />
+              <span className="font-medium">Качи XML файл</span>
+              <input type="file" accept=".xml" onChange={onFileUpload} className="hidden" />
+            </label>
 
-          {/* List of Custom Groups */}
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Всички групи:</h4>
-            <div className="flex flex-wrap gap-2">
-              {allGroups.map((group) => {
-                const isCustom = !defaultGroups.includes(group)
-                return (
-                  <div
-                    key={group}
-                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
-                      isCustom ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-700'
-                    }`}
-                  >
-                    <Tag size={14} />
-                    {group}
-                    {isCustom && (
-                      <button
-                        onClick={() => onDeleteCustomGroup(group)}
-                        className="ml-1 text-purple-600 hover:text-purple-900 transition-colors"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+            {/* Export Settings */}
+            <button
+              onClick={onExportSettings}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <Download size={20} />
+              <span className="font-medium">Експорт на настройки</span>
+            </button>
+
+            {/* Import Settings */}
+            <label className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors cursor-pointer">
+              <FileUp size={20} />
+              <span className="font-medium">Импорт на настройки</span>
+              <input type="file" accept=".json" onChange={onImportSettings} className="hidden" />
+            </label>
           </div>
         </div>
       </div>

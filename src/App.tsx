@@ -1,5 +1,4 @@
 import { useState, ChangeEvent } from 'react'
-import { Search } from 'lucide-react'
 import { getAllGroups, getBusinessGroupMappings } from './utils/xmlParser'
 import { useXMLData } from './hooks/useXMLData'
 import { useBusinessEditor } from './hooks/useBusinessEditor'
@@ -11,15 +10,20 @@ import { Header } from './components/Header'
 import { InfoBanner } from './components/InfoBanner'
 import { UploadSection } from './components/UploadSection'
 import { DataTable } from './components/DataTable'
-import { ActionButtons } from './components/ActionButtons'
 import { SettingsPanel } from './components/SettingsPanel'
 import { SubscriptionsTab } from './components/SubscriptionsTab'
 import { MonthlyChart } from './components/MonthlyChart'
+import { BusinessFilters } from './components/BusinessFilters'
+import { AddGroupModal } from './components/AddGroupModal'
 import { Footer } from './components/Footer'
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'business' | 'subscriptions'>('overview')
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'business' | 'subscriptions' | 'settings'
+  >('overview')
   const [searchTerm, setSearchTerm] = useState<string>('')
+  const [filterGroup, setFilterGroup] = useState<string>('')
+  const [showAddGroupModal, setShowAddGroupModal] = useState(false)
 
   // Custom hooks
   const { data, loadXML, reanalyzeData, reanalyzeWithBusinessUpdates } = useXMLData()
@@ -71,8 +75,29 @@ function App() {
   // Get filtered data
   const getFilteredData = () => {
     if (!data) return []
-    const dataSource = activeTab === 'overview' ? data.monthlySpending : data.businessSpending
-    return filterData(dataSource, searchTerm, activeTab === 'overview' ? 'overview' : 'business')
+
+    if (activeTab === 'overview') {
+      return filterData(data.monthlySpending, searchTerm, 'overview')
+    } else {
+      // Filter by search term
+      let filtered = filterData(data.businessSpending, searchTerm, 'business')
+
+      // Filter by group if selected
+      if (filterGroup && Array.isArray(filtered) && filtered.length > 0 && 'group' in filtered[0]) {
+        filtered = filtered.filter((item: any) => item.group === filterGroup)
+      }
+
+      return filtered
+    }
+  }
+
+  const handleAddGroup = () => {
+    setShowAddGroupModal(true)
+  }
+
+  const handleSaveNewGroup = () => {
+    groupEditor.addCustomGroup()
+    groupEditor.setNewGroupName('')
   }
 
   return (
@@ -88,72 +113,95 @@ function App() {
         {/* Data Display */}
         {data && (
           <>
-            {/* Tab Navigation & Search - Single Compact Row */}
-            <div className="bg-white rounded-lg shadow p-4 mb-6">
-              <div className="flex flex-wrap gap-4 items-center justify-between">
-                {/* Tabs */}
-                <div className="flex gap-2">
+            {/* Centered Tab Navigation */}
+            <div className="bg-white rounded-lg shadow mb-6">
+              <div className="flex justify-center p-2">
+                <div className="inline-flex gap-1 p-1 bg-gray-100 rounded-lg">
                   <button
-                    onClick={() => setActiveTab('overview')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                    onClick={() => {
+                      setActiveTab('overview')
+                      setSearchTerm('')
+                      setFilterGroup('')
+                    }}
+                    className={`px-6 py-2.5 rounded-md font-medium transition-all text-sm ${
                       activeTab === 'overview'
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-white text-indigo-700 shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
                     Оглед
                   </button>
                   <button
-                    onClick={() => setActiveTab('business')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                    onClick={() => {
+                      setActiveTab('business')
+                      setSearchTerm('')
+                      setFilterGroup('')
+                    }}
+                    className={`px-6 py-2.5 rounded-md font-medium transition-all text-sm ${
                       activeTab === 'business'
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-white text-indigo-700 shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
                     По търговци
                   </button>
                   <button
-                    onClick={() => setActiveTab('subscriptions')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                    onClick={() => {
+                      setActiveTab('subscriptions')
+                      setSearchTerm('')
+                      setFilterGroup('')
+                    }}
+                    className={`relative px-6 py-2.5 rounded-md font-medium transition-all text-sm ${
                       activeTab === 'subscriptions'
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-white text-indigo-700 shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
                     Абонаменти
                     {data.subscriptions.length > 0 && (
-                      <span
-                        className={`ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium ${
-                          activeTab === 'subscriptions'
-                            ? 'bg-white text-indigo-600'
-                            : 'bg-indigo-100 text-indigo-700'
-                        }`}
-                      >
+                      <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-indigo-600 rounded-full">
                         {data.subscriptions.length}
                       </span>
                     )}
                   </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab('settings')
+                      setSearchTerm('')
+                      setFilterGroup('')
+                    }}
+                    className={`px-6 py-2.5 rounded-md font-medium transition-all text-sm ${
+                      activeTab === 'settings'
+                        ? 'bg-white text-indigo-700 shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Настройки
+                  </button>
                 </div>
-
-                {/* Search - only show on transaction tabs */}
-                {activeTab !== 'subscriptions' && (
-                  <div className="relative w-full sm:w-64">
-                    <Search
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                      size={18}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Търсене..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                    />
-                  </div>
-                )}
               </div>
             </div>
+
+            {/* Business Filters - Only show on business tab */}
+            {activeTab === 'business' && (
+              <BusinessFilters
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                selectedGroup={filterGroup}
+                onGroupChange={setFilterGroup}
+                allGroups={getAllGroups()}
+                onAddGroup={handleAddGroup}
+              />
+            )}
+
+            {/* Add Group Modal */}
+            <AddGroupModal
+              isOpen={showAddGroupModal}
+              onClose={() => setShowAddGroupModal(false)}
+              groupName={groupEditor.newGroupName}
+              onGroupNameChange={groupEditor.setNewGroupName}
+              onSave={handleSaveNewGroup}
+            />
 
             {/* Monthly Transactions Tab */}
             {activeTab === 'overview' && (
@@ -205,25 +253,17 @@ function App() {
               <SubscriptionsTab subscriptions={data.subscriptions} />
             )}
 
-            <ActionButtons
-              onFileUpload={handleFileUpload}
-              showSettings={settings.showSettings}
-              onToggleSettings={() => settings.setShowSettings(!settings.showSettings)}
-              onExportSettings={settings.handleExportSettings}
-              onImportSettings={handleImportSettings}
-            />
-
-            <SettingsPanel
-              showSettings={settings.showSettings}
-              customMappings={settings.getCustomMappings()}
-              onDeleteMapping={settings.deleteMapping}
-              newGroupName={groupEditor.newGroupName}
-              onNewGroupNameChange={groupEditor.setNewGroupName}
-              onAddCustomGroup={groupEditor.addCustomGroup}
-              onDeleteCustomGroup={groupEditor.deleteGroup}
-              allGroups={getAllGroups()}
-              businessGroupMappings={getBusinessGroupMappings()}
-            />
+            {/* Settings Tab */}
+            {activeTab === 'settings' && (
+              <SettingsPanel
+                customMappings={settings.getCustomMappings()}
+                onDeleteMapping={settings.deleteMapping}
+                businessGroupMappings={getBusinessGroupMappings()}
+                onFileUpload={handleFileUpload}
+                onExportSettings={settings.handleExportSettings}
+                onImportSettings={handleImportSettings}
+              />
+            )}
           </>
         )}
       </div>
