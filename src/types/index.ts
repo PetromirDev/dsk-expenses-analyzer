@@ -5,6 +5,7 @@ export interface Merchant {
   patterns: string[]
   name: string
   category: string
+  canBeSubscription?: boolean
 }
 
 export interface MerchantsConfig {
@@ -18,6 +19,7 @@ export interface Transaction {
   oppositeSideName: string
   oppositeSideAccount: string
   businessName: string
+  canBeSubscription: boolean
   movementType: 'Debit' | 'Credit'
   monthYear: string
   reason: string

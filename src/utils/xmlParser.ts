@@ -66,16 +66,6 @@ export const merchantDatabase: MerchantDatabase = Object.values(merchantsConfig)
     return acc
   }, {} as MerchantDatabase)
 
-// Legacy mapping for backward compatibility
-export const defaultBusinessMapping: Record<string, string> = {
-  LIDL: 'Lidl',
-  KAUFLAND: 'Kaufland',
-  BILLA: 'Billa',
-  SHELL: 'Shell',
-  DOMINOS: "Domino's Pizza",
-  TECHNOPOLIS: 'Technopolis'
-}
-
 // Default groups
 export const defaultGroups: string[] = [
   'Храна',
@@ -90,6 +80,45 @@ export const defaultGroups: string[] = [
   'Облекло',
   'Други'
 ]
+
+const BULGARIAN_CITIES = [
+  'SOFIA',
+  'SOFIYA',
+  'SOFIQ',
+  'СОФИЯ',
+  'VARNA',
+  'ВАРНА',
+  'BURGAS',
+  'БУРГАС',
+  'PLOVDIV',
+  'ПЛОВДИВ',
+  'RUSE',
+  'РУСЕ',
+  'STARA ZAGORA',
+  'СТАРА ЗАГОРА',
+  'PLEVEN',
+  'ПЛЕВЕН',
+  'SLIVEN',
+  'СЛИВЕН',
+  'DOBRICH',
+  'ДОБРИЧ',
+  'SHUMEN',
+  'ШУМЕН',
+  'PERNIK',
+  'ПЕРНИК',
+  'HASKOVO',
+  'ХАСКОВО',
+  'YAMBOL',
+  'ЯМБОЛ',
+  'PAZARDZHIK',
+  'ПАЗАРДЖИК',
+  'BLAGOEVGRAD',
+  'БЛАГОЕВГРАД',
+  'VELIKO TARNOVO',
+  'ВЕЛИКО ТЪРНОВО',
+  'VRACA',
+  'ВРАЦА'
+].sort((a, b) => b.length - a.length)
 
 // Build defaultBusinessGroupMapping from merchantDatabase
 export const defaultBusinessGroupMapping: Record<string, string> = Object.values(
@@ -223,11 +252,6 @@ export function importSettings(settingsData: SettingsData): boolean {
   }
 }
 
-// Get all mappings (default + custom)
-export function getAllMappings(): Record<string, string> {
-  return { ...defaultBusinessMapping, ...getCustomMappings() }
-}
-
 // Function to parse amount from string format (e.g., "18,20" -> 18.20)
 export function parseAmount(amountStr: string): number {
   return parseFloat(amountStr.replace(',', '.'))
@@ -241,8 +265,17 @@ export function parseDate(dateStr: string): Date {
 
 // Enhanced function to get human-readable business name with transliteration and fuzzy matching
 export function getBusinessName(oppositeSideName: string): string {
+  const result = getBusinessInfo(oppositeSideName)
+  return result.name
+}
+
+// Function to get business name and subscription eligibility
+export function getBusinessInfo(oppositeSideName: string): {
+  name: string
+  canBeSubscription: boolean
+} {
   if (!oppositeSideName || oppositeSideName.trim() === '') {
-    return 'Без име'
+    return { name: 'Без име', canBeSubscription: true }
   }
 
   // Normalize the input (transliterate Cyrillic to Latin and uppercase)
@@ -251,7 +284,8 @@ export function getBusinessName(oppositeSideName: string): string {
   // First priority: Check exact custom mappings
   const customMappings = getCustomMappings()
   if (customMappings[oppositeSideName]) {
-    return customMappings[oppositeSideName]
+    // Custom mappings are always eligible for subscriptions
+    return { name: customMappings[oppositeSideName], canBeSubscription: true }
   }
 
   // Second priority: Check merchantDatabase with pattern matching
@@ -269,21 +303,17 @@ export function getBusinessName(oppositeSideName: string): string {
 
       // Check if the normalized pattern is in the normalized input
       if (normalizedInput.includes(normalizedPattern)) {
-        return merchant.name
+        // Use merchant's canBeSubscription flag, default to false if not set
+        return {
+          name: merchant.name,
+          canBeSubscription: !!merchant.canBeSubscription
+        }
       }
     }
   }
 
-  // Third priority: Check legacy defaultBusinessMapping
-  const upperName = oppositeSideName.toUpperCase()
-  for (const [key, value] of Object.entries(defaultBusinessMapping)) {
-    if (upperName.includes(key.toUpperCase())) {
-      return value
-    }
-  }
-
-  // If no mapping found, clean up the name
-  return cleanBusinessName(oppositeSideName)
+  // If no mapping found, clean up the name and allow as subscription (unknown merchant)
+  return { name: cleanBusinessName(oppositeSideName), canBeSubscription: true }
 }
 
 // Helper function to clean up business names that don't have mappings
@@ -292,49 +322,7 @@ function cleanBusinessName(name: string): string {
   let cleaned = name.replace(/^[A-Z]{3}\s+/i, '')
 
   // Remove city names at the start (common pattern in Bulgarian bank exports)
-  const bulgarianCities = [
-    'SOFIA',
-    'SOFIYA',
-    'SOFIQ',
-    'СОФИЯ',
-    'VARNA',
-    'ВАРНА',
-    'BURGAS',
-    'БУРГАС',
-    'PLOVDIV',
-    'ПЛОВДИВ',
-    'RUSE',
-    'РУСЕ',
-    'STARA ZAGORA',
-    'СТАРА ЗАГОРА',
-    'PLEVEN',
-    'ПЛЕВЕН',
-    'SLIVEN',
-    'СЛИВЕН',
-    'DOBRICH',
-    'ДОБРИЧ',
-    'SHUMEN',
-    'ШУМЕН',
-    'PERNIK',
-    'ПЕРНИК',
-    'HASKOVO',
-    'ХАСКОВО',
-    'YAMBOL',
-    'ЯМБОЛ',
-    'PAZARDZHIK',
-    'ПАЗАРДЖИК',
-    'BLAGOEVGRAD',
-    'БЛАГОЕВГРАД',
-    'VELIKO TARNOVO',
-    'ВЕЛИКО ТЪРНОВО',
-    'VRACA',
-    'ВРАЦА'
-  ]
-
-  // Sort by length (longer first) to match multi-word cities first
-  bulgarianCities.sort((a, b) => b.length - a.length)
-
-  for (const city of bulgarianCities) {
+  for (const city of BULGARIAN_CITIES) {
     const regex = new RegExp(`^${city}\\s+`, 'i')
     cleaned = cleaned.replace(regex, '')
   }
@@ -404,12 +392,16 @@ export function getMonthYear(date: Date): string {
 function detectSubscriptions(transactions: Transaction[]): Subscription[] {
   const PRICE_THRESHOLD_PERCENTAGE = 0.1
   const DATE_TOLERANCE_DAYS = 3
+  const MINIMUM_CONSECUTIVE_MONTHS = 2
   const subscriptions: Subscription[] = []
 
   // Filter only Debit transactions without OppositeSideAccount (not bank transfers)
+  // AND where canBeSubscription is true
   const eligibleTransactions = transactions.filter(
     (t) =>
-      t.movementType === 'Debit' && (!t.oppositeSideAccount || t.oppositeSideAccount.trim() === '')
+      t.movementType === 'Debit' &&
+      (!t.oppositeSideAccount || t.oppositeSideAccount.trim() === '') &&
+      t.canBeSubscription
   )
 
   // Group by business name
@@ -423,8 +415,7 @@ function detectSubscriptions(transactions: Transaction[]): Subscription[] {
 
   // Analyze each business for subscription patterns
   Object.entries(businessGroups).forEach(([businessName, txns]) => {
-    // Need at least 2 transactions to detect a pattern
-    if (txns.length < 2) return
+    if (txns.length < MINIMUM_CONSECUTIVE_MONTHS) return
 
     // Sort by date (oldest first)
     const sortedTxns = [...txns].sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime())
@@ -482,9 +473,9 @@ function detectSubscriptions(transactions: Transaction[]): Subscription[] {
 
         // Check if day of month is within ±1 day tolerance
         const dayDifference = Math.abs(currentDayOfMonth - lastDayOfMonth!)
-        const isSameDayOfMonth = dayDifference <= DATE_TOLERANCE_DAYS
+        const isWithinDaysThreshold = dayDifference <= DATE_TOLERANCE_DAYS
 
-        if (isConsecutive && isSameDayOfMonth) {
+        if (isConsecutive && isWithinDaysThreshold) {
           // Check if amount is within threshold
           const threshold = lastAmount * PRICE_THRESHOLD_PERCENTAGE
           const lowerBound = lastAmount - threshold
@@ -521,7 +512,7 @@ function detectSubscriptions(transactions: Transaction[]): Subscription[] {
           }
         } else {
           // Not consecutive or not same day - end current sequence if it's valid
-          if (currentSequence.length >= 2) {
+          if (currentSequence.length >= MINIMUM_CONSECUTIVE_MONTHS) {
             createSubscription(businessName, currentSequence, subscriptions)
           }
           // Start new sequence
@@ -541,7 +532,7 @@ function detectSubscriptions(transactions: Transaction[]): Subscription[] {
     })
 
     // Check final sequence
-    if (currentSequence.length >= 2) {
+    if (currentSequence.length >= MINIMUM_CONSECUTIVE_MONTHS) {
       createSubscription(businessName, currentSequence, subscriptions)
     }
   })
@@ -598,7 +589,7 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
     const oppositeSideName = movement.OppositeSideName[0]
     const oppositeSideAccount = movement.OppositeSideAccount?.[0] || ''
     const movementType = movement.MovementType[0]
-    const businessName = getBusinessName(oppositeSideName)
+    const businessInfo = getBusinessInfo(oppositeSideName)
     const monthYear = getMonthYear(date)
 
     const transaction: Transaction = {
@@ -607,7 +598,8 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
       amount,
       oppositeSideName,
       oppositeSideAccount,
-      businessName,
+      businessName: businessInfo.name,
+      canBeSubscription: businessInfo.canBeSubscription,
       movementType,
       monthYear,
       reason: movement.Reason[0]
@@ -631,6 +623,7 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
       monthlyData[monthYear].transactions.push(transaction)
 
       // Add to business spending - now handles merging
+      const businessName = businessInfo.name
       if (!businessData[businessName]) {
         businessData[businessName] = {
           name: businessName,

@@ -332,7 +332,8 @@
       "id": "amazon",
       "patterns": ["AMAZON", "АМАЗОН"],
       "name": "Amazon",
-      "category": "Онлайн пазаруване"
+      "category": "Онлайн пазаруване",
+      "canBeSubscription": true
     },
     {
       "id": "ebay",
@@ -352,19 +353,22 @@
       "id": "booking",
       "patterns": ["BOOKING.COM", "BOOKING COM", "BOOKING", "БУКИНГ"],
       "name": "Booking.com",
-      "category": "Почивки"
+      "category": "Почивки",
+      "canBeSubscription": true
     },
     {
       "id": "ryanair",
       "patterns": ["RYANAIR", "RYAN AIR", "РАЙЪНЕЪР"],
       "name": "Ryanair",
-      "category": "Почивки"
+      "category": "Почивки",
+      "canBeSubscription": true
     },
     {
       "id": "wizzair",
       "patterns": ["WIZZAIR", "WIZZ AIR", "УИЗЕЪР"],
       "name": "Wizz Air",
-      "category": "Почивки"
+      "category": "Почивки",
+      "canBeSubscription": true
     }
   ],
   "transport": [
