@@ -1,8 +1,8 @@
 import { Search } from 'lucide-react'
 
 export interface ControlsProps {
-  selectedView: 'month' | 'business'
-  onViewChange: (view: 'month' | 'business') => void
+  selectedView: 'overview' | 'business'
+  onViewChange: (view: 'overview' | 'business') => void
   searchTerm: string
   onSearchChange: (term: string) => void
 }

@@ -10,7 +10,6 @@ import { filterData } from './helpers/dataHelpers'
 import { Header } from './components/Header'
 import { InfoBanner } from './components/InfoBanner'
 import { UploadSection } from './components/UploadSection'
-import { SummaryCards } from './components/SummaryCards'
 import { DataTable } from './components/DataTable'
 import { ActionButtons } from './components/ActionButtons'
 import { SettingsPanel } from './components/SettingsPanel'
@@ -19,7 +18,7 @@ import { MonthlyChart } from './components/MonthlyChart'
 import { Footer } from './components/Footer'
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'month' | 'business' | 'subscriptions'>('month')
+  const [activeTab, setActiveTab] = useState<'overview' | 'business' | 'subscriptions'>('overview')
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   // Custom hooks
@@ -72,8 +71,8 @@ function App() {
   // Get filtered data
   const getFilteredData = () => {
     if (!data) return []
-    const dataSource = activeTab === 'month' ? data.monthlySpending : data.businessSpending
-    return filterData(dataSource, searchTerm, activeTab === 'month' ? 'month' : 'business')
+    const dataSource = activeTab === 'overview' ? data.monthlySpending : data.businessSpending
+    return filterData(dataSource, searchTerm, activeTab === 'overview' ? 'overview' : 'business')
   }
 
   return (
@@ -89,26 +88,20 @@ function App() {
         {/* Data Display */}
         {data && (
           <>
-            <SummaryCards
-              totalIncome={data.totalIncome}
-              totalSpent={data.totalSpent}
-              netBalance={data.netBalance}
-            />
-
             {/* Tab Navigation & Search - Single Compact Row */}
             <div className="bg-white rounded-lg shadow p-4 mb-6">
               <div className="flex flex-wrap gap-4 items-center justify-between">
                 {/* Tabs */}
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setActiveTab('month')}
+                    onClick={() => setActiveTab('overview')}
                     className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
-                      activeTab === 'month'
+                      activeTab === 'overview'
                         ? 'bg-indigo-600 text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    По месеци
+                    Оглед
                   </button>
                   <button
                     onClick={() => setActiveTab('business')}
@@ -163,12 +156,12 @@ function App() {
             </div>
 
             {/* Monthly Transactions Tab */}
-            {activeTab === 'month' && (
+            {activeTab === 'overview' && (
               <>
                 <MonthlyChart data={data.monthlyChartData} />
                 <DataTable
                   data={getFilteredData()}
-                  selectedView="month"
+                  selectedView="overview"
                   editingBusiness={businessEditor.editingBusiness}
                   editValue={businessEditor.editValue}
                   onEditValueChange={businessEditor.setEditValue}

@@ -17,13 +17,13 @@ export function getItemGroup(item: MonthlySpending | BusinessSpending): string |
 export function filterData(
   data: (MonthlySpending | BusinessSpending)[],
   searchTerm: string,
-  view: 'month' | 'business'
+  view: 'overview' | 'business'
 ): (MonthlySpending | BusinessSpending)[] {
   if (!searchTerm.trim()) return data
 
   return data.filter((item) => {
     const searchIn =
-      view === 'month'
+      view === 'overview'
         ? isBusinessSpending(item)
           ? ''
           : item.month

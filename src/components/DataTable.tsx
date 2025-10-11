@@ -5,7 +5,7 @@ import type { BusinessSpending, MonthlySpending } from '../types'
 
 export interface DataTableProps {
   data: (MonthlySpending | BusinessSpending)[]
-  selectedView: 'month' | 'business'
+  selectedView: 'overview' | 'business'
   editingBusiness: string | null
   editValue: string
   onEditValueChange: (value: string) => void
@@ -46,7 +46,7 @@ export function DataTable({
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {selectedView === 'month' ? 'Месец' : 'Търговец'}
+                {selectedView === 'overview' ? 'Месец' : 'Търговец'}
               </th>
               {selectedView === 'business' && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
