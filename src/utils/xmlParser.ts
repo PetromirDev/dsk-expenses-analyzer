@@ -402,7 +402,8 @@ export function getMonthYear(date: Date): string {
 
 // Function to detect potential subscriptions
 function detectSubscriptions(transactions: Transaction[]): Subscription[] {
-  const THRESHOLD_PERCENTAGE = 0.05 // 5% threshold
+  const PRICE_THRESHOLD_PERCENTAGE = 0.1
+  const DATE_TOLERANCE_DAYS = 3
   const subscriptions: Subscription[] = []
 
   // Filter only Debit transactions without OppositeSideAccount (not bank transfers)
@@ -481,11 +482,11 @@ function detectSubscriptions(transactions: Transaction[]): Subscription[] {
 
         // Check if day of month is within ±1 day tolerance
         const dayDifference = Math.abs(currentDayOfMonth - lastDayOfMonth!)
-        const isSameDayOfMonth = dayDifference <= 1
+        const isSameDayOfMonth = dayDifference <= DATE_TOLERANCE_DAYS
 
         if (isConsecutive && isSameDayOfMonth) {
           // Check if amount is within threshold
-          const threshold = lastAmount * THRESHOLD_PERCENTAGE
+          const threshold = lastAmount * PRICE_THRESHOLD_PERCENTAGE
           const lowerBound = lastAmount - threshold
           const upperBound = lastAmount + threshold
 

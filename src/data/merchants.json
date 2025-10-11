@@ -125,12 +125,6 @@
       "category": "Облекло"
     },
     {
-      "id": "colin",
-      "patterns": ["COLIN", "COLIN'S", "КОЛИН"],
-      "name": "Colin's",
-      "category": "Облекло"
-    },
-    {
       "id": "cropp",
       "patterns": ["CROPP", "КРОП"],
       "name": "Cropp",
