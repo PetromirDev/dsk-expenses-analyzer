@@ -22,8 +22,8 @@ function App() {
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   // Custom hooks
-  const { data, loadXML, reanalyzeData } = useXMLData()
-  const businessEditor = useBusinessEditor(reanalyzeData)
+  const { data, loadXML, reanalyzeData, reanalyzeWithBusinessUpdates } = useXMLData()
+  const businessEditor = useBusinessEditor(reanalyzeWithBusinessUpdates)
   const groupEditor = useGroupEditor(reanalyzeData)
   const settings = useSettings(reanalyzeData)
 
