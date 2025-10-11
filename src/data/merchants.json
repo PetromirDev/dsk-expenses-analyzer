@@ -596,6 +596,13 @@
       "name": "GitHub",
       "category": "Абонаменти",
       "canBeSubscription": true
+    },
+    {
+      "id": "storytel",
+      "patterns": ["STORYTEL", "СТОРИТЕЛ"],
+      "name": "Storytel",
+      "category": "Абонаменти",
+      "canBeSubscription": true
     }
   ],
   "coffee": [
