@@ -165,6 +165,12 @@
       "patterns": ["RESERVED", "РЕЗЕРВЕД"],
       "name": "Reserved",
       "category": "Облекло"
+    },
+    {
+      "id": "itx",
+      "patterns": ["ITX", "АЙ ТИ ЕКС", "MOHITO"],
+      "name": "ITX Bulgaria (Zara, Pull&Bear, Stradivarius, Bershka, Mango)",
+      "category": "Облекло"
     }
   ],
   "health": [
@@ -297,6 +303,12 @@
       "patterns": ["GODZILLA", "ГОДЗИЛА"],
       "name": "Godzilla",
       "category": "Ресторанти"
+    },
+    {
+      "id": "gogrill",
+      "patterns": ["GOGRILL", "GO GRILL", "ГО ГРИЛ"],
+      "name": "Go Grill",
+      "category": "Ресторанти"
     }
   ],
   "utilities": [
@@ -366,6 +378,42 @@
       "id": "fedex",
       "patterns": ["FEDEX", "ФЕДЕКС"],
       "name": "FedEx",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "ups",
+      "patterns": ["UPS", "ЮПС"],
+      "name": "UPS",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "easybox",
+      "patterns": ["EASYBOX", "EASY BOX", "ИЗИБОКС"],
+      "name": "Easybox",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "europat",
+      "patterns": ["EUROPAT", "EURO PAT", "ЕВРОПАТ"],
+      "name": "Europat",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "sameday",
+      "patterns": ["SAMEDAY", "SAME DAY", "СЕЙМ ДЕЙ"],
+      "name": "Sameday",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "expressone",
+      "patterns": ["EXPRESS ONE", "EXPRESSONE", "ЕКСПРЕС УАН"],
+      "name": "Express One",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "bulpost",
+      "patterns": ["BULPOST", "BULGARIAN POST", "БЪЛГАРСКИ ПОЩИ"],
+      "name": "Bulpost",
       "category": "Онлайн пазаруване"
     }
   ],
@@ -561,6 +609,14 @@
       "category": "Битови"
     }
   ],
+  "banking": [
+    {
+      "id": "atm",
+      "patterns": ["ATM", "АТМ", "БАНКОМАТ", "DSKBANK HR BO"],
+      "name": "Теглене от банкомат",
+      "category": "Банки"
+    }
+  ],
   "subscriptions": [
     {
       "id": "hbo",
@@ -603,12 +659,19 @@
       "name": "Storytel",
       "category": "Абонаменти",
       "canBeSubscription": true
+    },
+    {
+      "id": "apple",
+      "patterns": ["APPLE", "APPLE.COM", "ICLOUD"],
+      "name": "Apple",
+      "category": "Абонаменти",
+      "canBeSubscription": true
     }
   ],
   "coffee": [
     {
       "id": "starbucks",
-      "patterns": ["STARBUCKS", "СТАРБЪКС"],
+      "patterns": ["STARBUCKS", "СТАРБЪКС", "AMREST"],
       "name": "Starbucks",
       "category": "Кафе"
     },
@@ -625,6 +688,43 @@
       "patterns": ["DECATHLON", "ДЕКАТЛОН", "DEKATLON"],
       "name": "Decathlon",
       "category": "Спорт"
+    }
+  ],
+  "education": [
+    {
+      "id": "skillshare",
+      "patterns": ["SKILLSHARE", "SKILL SHARE"],
+      "name": "Skillshare",
+      "category": "Образование",
+      "canBeSubscription": true
+    },
+    {
+      "id": "udemy",
+      "patterns": ["UDEMY"],
+      "name": "Udemy",
+      "category": "Образование",
+      "canBeSubscription": true
+    },
+    {
+      "id": "coursera",
+      "patterns": ["COURSERA"],
+      "name": "Coursera",
+      "category": "Образование",
+      "canBeSubscription": true
+    },
+    {
+      "id": "university",
+      "patterns": ["УНИВЕРСИТЕТ", "UNIVERSITY", "UNIVERSITET", "UNIVERSI"],
+      "name": "Университет",
+      "category": "Образование",
+      "canBeSubscription": true
+    },
+    {
+      "id": "uchase",
+      "patterns": ["UCHA SE", "UCHASE", "УЧАСЕ", "УЧА СЕ"],
+      "name": "Уча се",
+      "category": "Образование",
+      "canBeSubscription": true
     }
   ]
 }
