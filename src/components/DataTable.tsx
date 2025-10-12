@@ -78,14 +78,14 @@ export function DataTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {data.map((item, index) => {
+            {data.map((item) => {
               const itemName = getItemName(item)
               const itemGroup = getItemGroup(item)
               const isExpanded = expandedBusiness === itemName
 
               return (
                 <>
-                  <tr key={index} className="hover:bg-gray-50 transition-colors">
+                  <tr key={itemName + itemGroup} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       {selectedView === 'business' && editingBusiness === itemName ? (
                         <input
@@ -211,13 +211,13 @@ export function DataTable({
         {data.length === 0 ? (
           <div className="text-center py-12 text-gray-500">Няма намерени резултати</div>
         ) : (
-          data.map((item, index) => {
+          data.map((item) => {
             const itemName = getItemName(item)
             const itemGroup = getItemGroup(item)
             const isExpanded = expandedBusiness === itemName
 
             return (
-              <div key={index} className="p-4 hover:bg-gray-50 transition-colors">
+              <div key={itemName + itemGroup} className="p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="flex-1 min-w-0 pr-2">
                     {selectedView === 'business' && editingBusiness === itemName ? (
