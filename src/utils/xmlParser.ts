@@ -103,10 +103,46 @@ export function saveBusinessGroupMapping(businessName: string, groupName: string
   localStorage.setItem('businessGroupMappings', JSON.stringify(mappings))
 }
 
-export function getBusinessGroup(businessName: string): string {
+export function getBusinessGroup(businessName: string) {
   const customMappings = getBusinessGroupMappings()
   if (customMappings[businessName]) {
     return customMappings[businessName]
+  }
+
+  const lowercaseName = businessName.toLowerCase()
+
+  if (
+    lowercaseName.includes('sladkarnitsa') ||
+    lowercaseName.includes('сладкарница') ||
+    lowercaseName.includes('magazin') ||
+    lowercaseName.includes('hranitelni') ||
+    lowercaseName.includes('хранителни') ||
+    lowercaseName.includes('supermarket') ||
+    lowercaseName.includes('супермаркет')
+  ) {
+    return 'Храна'
+  }
+
+  if (
+    lowercaseName.includes('pizza') ||
+    lowercaseName.includes('restorant') ||
+    lowercaseName.includes('restaurant') ||
+    lowercaseName.includes('ресторант') ||
+    lowercaseName.includes('kafe') ||
+    lowercaseName.includes('cafe') ||
+    lowercaseName.includes('bar') ||
+    lowercaseName.includes('coffee') ||
+    lowercaseName.includes('bistro') ||
+    lowercaseName.includes('pizzeria') ||
+    lowercaseName.includes('kebab') ||
+    lowercaseName.includes('fast food') ||
+    lowercaseName.includes('food')
+  ) {
+    return 'Ресторанти'
+  }
+
+  if (lowercaseName.includes('hotel')) {
+    return 'Почивки'
   }
 
   if (defaultBusinessGroupMapping[businessName]) {
@@ -181,7 +217,9 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
   }
 
   // Parse XML using bank-specific adapter
-  const standardTransactions = await adapter.parseXML(xmlContent)
+  const standardTransactions = (await adapter.parseXML(xmlContent)).filter(
+    (t) => t.reason !== 'ТРАНСФЕР МЕЖДУ СВОИ СМЕТКИ'
+  )
 
   // Calculate totals
   const { totalSpent, totalIncome, netBalance } = calculateTotals(standardTransactions)
