@@ -1,5 +1,5 @@
 /**
- * DSK Bank (ДСК Банка) adapter
+ * DSK Bank (Банка ДСК) adapter
  * Parses DSK-specific XML format to StandardTransaction format
  */
 

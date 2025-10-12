@@ -16,7 +16,7 @@ export function UploadSection({ onFileUpload, onLoadDemo }: UploadSectionProps) 
           </div>
           <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">Качете XML файл</h2>
           <p className="text-sm sm:text-base text-gray-600 mb-6">
-            Изберете XML файл с банкови движения от ДСК банка
+            Изберете XML файл с банкови движения от банка ДСК
           </p>
         </div>
 
