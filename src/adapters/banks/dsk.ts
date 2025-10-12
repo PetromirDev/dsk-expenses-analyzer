@@ -71,7 +71,8 @@ export class DSKBankAdapter implements BankAdapter {
         oppositeSideName,
         oppositeSideAccount,
         businessName: businessInfo.name,
-        canBeSubscription: businessInfo.canBeSubscription,
+        // Exclude transfers from subscriptions
+        canBeSubscription: businessInfo.canBeSubscription && !oppositeSideAccount,
         monthYear,
         reason,
         foreignCurrency
