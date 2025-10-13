@@ -59,10 +59,10 @@ export function recomputeAnalysis(transactions: Transaction[]): AnalysisResult {
  */
 export function updateBusinessNamesInTransactions(
   transactions: Transaction[],
-  getBusinessInfo: (name: string) => { name: string; canBeSubscription: boolean }
+  getBusinessInfo: (name: string, reason: string) => { name: string; canBeSubscription: boolean }
 ): Transaction[] {
   return transactions.map((t) => {
-    const businessInfo = getBusinessInfo(t.oppositeSideName)
+    const businessInfo = getBusinessInfo(t.oppositeSideName, t.reason)
     return {
       ...t,
       businessName: businessInfo.name,

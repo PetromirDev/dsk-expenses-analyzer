@@ -218,7 +218,7 @@ export async function analyzeXML(xmlContent: string): Promise<AnalysisResult> {
 
   // Parse XML using bank-specific adapter
   const standardTransactions = (await adapter.parseXML(xmlContent)).filter(
-    (t) => t.reason !== 'ТРАНСФЕР МЕЖДУ СВОИ СМЕТКИ'
+    (t) => t.reason !== 'ТРАНСФЕР МЕЖДУ СВОИ СМЕТКИ' && t.reason !== 'ПРЕВОД МЕЖДУ МОИ СМЕТКИ'
   )
 
   // Calculate totals

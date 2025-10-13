@@ -4,7 +4,7 @@
 
 import merchantsConfig from '../data/merchants.json'
 import type { MerchantDatabase, CustomMappings } from '../types'
-import { normalizeText, cleanBusinessName } from '../utils/textNormalization'
+import { cleanBusinessName } from '../utils/textNormalization'
 
 // Build merchant database from JSON config
 export const merchantDatabase: MerchantDatabase = Object.values(merchantsConfig)
@@ -35,17 +35,24 @@ export function saveCustomMapping(originalName: string, newName: string): void {
  * Get business name and subscription eligibility from merchant name
  * This is the core merchant matching logic
  */
-export function getBusinessInfo(oppositeSideName: string): {
+export function getBusinessInfo(
+  oppositeSideName: string,
+  reason: string
+): {
   name: string
   canBeSubscription: boolean
 } {
+  const lowercaseReason = reason.toLowerCase()
+
+  if (lowercaseReason.includes('такса') || lowercaseReason.includes('вн.на пари')) {
+    return { name: 'Банкови такси', canBeSubscription: false }
+  }
+
   if (!oppositeSideName || oppositeSideName.trim() === '') {
     return { name: 'Без име', canBeSubscription: true }
   }
 
-  // Normalize the input (transliterate Cyrillic to Latin and uppercase)
-  const normalizedInput = normalizeText(oppositeSideName)
-
+  const lowercaseInput = oppositeSideName.toLowerCase()
   // First priority: Check exact custom mappings
   const customMappings = getCustomMappings()
   if (customMappings[oppositeSideName]) {
@@ -64,10 +71,10 @@ export function getBusinessInfo(oppositeSideName: string): {
 
   for (const merchant of sortedMerchants) {
     for (const pattern of merchant.patterns) {
-      const normalizedPattern = normalizeText(pattern)
+      const lowercasePattern = pattern.toLowerCase()
 
       // Check if the normalized pattern is in the normalized input
-      if (normalizedInput.includes(normalizedPattern)) {
+      if (lowercaseInput.includes(lowercasePattern)) {
         // Use merchant's canBeSubscription flag, default to false if not set
         return {
           name: merchant.name,
@@ -84,7 +91,7 @@ export function getBusinessInfo(oppositeSideName: string): {
 /**
  * Legacy function for backward compatibility
  */
-export function getBusinessName(oppositeSideName: string): string {
-  const result = getBusinessInfo(oppositeSideName)
+export function getBusinessName(oppositeSideName: string, reason: string): string {
+  const result = getBusinessInfo(oppositeSideName, reason)
   return result.name
 }

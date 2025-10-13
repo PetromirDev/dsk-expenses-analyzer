@@ -726,5 +726,13 @@
       "category": "Образование",
       "canBeSubscription": true
     }
+  ],
+  "loans": [
+    {
+      "id": "credit",
+      "patterns": ["ЗАЕМ", "КРЕДИТ", "CREDIT", "РЕВОЛВИРАНЕ"],
+      "name": "Кредит/Заем",
+      "category": "Кредити"
+    }
   ]
 }

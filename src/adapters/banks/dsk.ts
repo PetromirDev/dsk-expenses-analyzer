@@ -53,12 +53,11 @@ export class DSKBankAdapter implements BankAdapter {
       const oppositeSideName = movement.OppositeSideName[0]
       const oppositeSideAccount = movement.OppositeSideAccount?.[0] || ''
       const movementType = movement.MovementType[0] as 'Debit' | 'Credit'
-      const businessInfo = getBusinessInfo(oppositeSideName)
-      const monthYear = getMonthYear(date)
-
       // Extract reason - handle both string and object format
       const reasonRaw = movement.Reason[0] ?? ''
       const reason = typeof reasonRaw === 'string' ? reasonRaw : reasonRaw._ || ''
+      const businessInfo = getBusinessInfo(oppositeSideName, reason)
+      const monthYear = getMonthYear(date)
 
       // Extract foreign currency if available
       const foreignCurrency = extractForeignCurrency(reason)
