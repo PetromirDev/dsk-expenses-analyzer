@@ -17,6 +17,7 @@ import { MonthlyChart } from './components/MonthlyChart'
 import { BusinessFilters } from './components/BusinessFilters'
 import { AddGroupModal } from './components/AddGroupModal'
 import { Footer } from './components/Footer'
+import { ChevronLeft } from 'lucide-react'
 
 function App() {
   const [activeTab, setActiveTab] = useState<
@@ -27,7 +28,7 @@ function App() {
   const [showAddGroupModal, setShowAddGroupModal] = useState(false)
 
   // Custom hooks
-  const { data, loadXML, reanalyzeData, reanalyzeWithBusinessUpdates } = useXMLData()
+  const { data, loadXML, reset, reanalyzeData, reanalyzeWithBusinessUpdates } = useXMLData()
   const businessEditor = useBusinessEditor(reanalyzeWithBusinessUpdates)
   const groupEditor = useGroupEditor(reanalyzeData)
   const settings = useSettings(reanalyzeData)
@@ -112,17 +113,27 @@ function App() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header />
 
-      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <InfoBanner />
+      <div
+        className={`flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ${!!data ? 'pt-4' : 'pt-8'}`}
+      >
+        {!data ? (
+          <InfoBanner />
+        ) : (
+          <button
+            className="mb-6 text-sm text-gray-600 hover:text-gray-900 underline"
+            onClick={reset}
+          >
+            <ChevronLeft className="inline-block mr-1" size={16} />
+            Качи друг файл
+          </button>
+        )}
 
-        {/* Upload Section */}
-        {!data && <UploadSection onFileUpload={handleFileUpload} onLoadDemo={handleLoadDemo} />}
-
-        {/* Data Display */}
-        {data && (
+        {!data ? (
+          <UploadSection onFileUpload={handleFileUpload} onLoadDemo={handleLoadDemo} />
+        ) : (
           <>
             {/* Centered Tab Navigation */}
-            <div className="bg-white rounded-lg shadow mb-6">
+            <div className="bg-white rounded-lg shadow mb-4">
               <div className="flex justify-center p-2 overflow-x-auto">
                 <div className="inline-flex gap-1 p-1 bg-gray-100 rounded-lg min-w-max">
                   <button

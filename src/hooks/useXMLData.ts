@@ -14,6 +14,7 @@ export function useXMLData() {
       const result = await analyzeXML(xmlText)
       setTransactions(result.transactions)
       setData(result)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       return { success: true }
     } catch (error) {
       console.error('Error parsing XML:', error)
@@ -49,8 +50,14 @@ export function useXMLData() {
     setData(result)
   }
 
+  const reset = () => {
+    setData(null)
+    setTransactions([])
+  }
+
   return {
     data,
+    reset,
     loadXML,
     reanalyzeData,
     reanalyzeWithBusinessUpdates

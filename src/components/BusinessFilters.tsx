@@ -76,7 +76,7 @@ export function BusinessFilters({
         </div>
       </div>
       {/* Display total for the selected filters */}
-      <div className="text-left text-gray-700 text-sm">
+      <div className="text-right md:text-left text-gray-700 text-sm">
         <span className="font-medium">Общо:</span>{' '}
         <span className="font-semibold">{filteredTotal.toFixed(2)} лв.</span>
       </div>

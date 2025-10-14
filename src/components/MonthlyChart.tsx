@@ -63,7 +63,7 @@ export function MonthlyChart({ data }: MonthlyChartProps) {
     totals.income > 0 ? ((netBalance / totals.income) * 100).toFixed(1) : '0'
 
   return (
-    <Card className="mb-6 overflow-hidden">
+    <Card className="mb-3 overflow-hidden">
       <CardHeader className="pb-4 px-4 sm:px-6">
         <CardTitle className="text-xl">Финансов преглед</CardTitle>
         <CardDescription className="text-sm">{getDateRange()}</CardDescription>
