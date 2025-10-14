@@ -83,18 +83,24 @@
       "patterns": ["MY MARKET", "MAY MARKET", "МАЙ МАРКЕТ"],
       "name": "My Market",
       "category": "Храна"
+    },
+    {
+      "id": "fantastico",
+      "patterns": ["FANTASTICO", "ФАНТАСТИКО", "FANTASTIKO"],
+      "name": "Fantastico",
+      "category": "Храна"
     }
   ],
   "tech": [
     {
       "id": "technopolis",
-      "patterns": ["TECHNOPOLIS", "ТЕХНОПОЛИС", "TEHNO POLIS"],
+      "patterns": ["TECHNOPOLIS", "TEHNOPOLIS", "ТЕХНОПОЛИС", "TEHNO POLIS"],
       "name": "Technopolis",
       "category": "Техника"
     },
     {
       "id": "technomarket",
-      "patterns": ["TECHNOMARKET", "ТЕХНОМАРКЕТ", "TEHNO MARKET"],
+      "patterns": ["TECHNOMARKET", "ТЕХНОМАРКЕТ", "TEHNOMARKET", "TEHNO MARKET"],
       "name": "Technomarket",
       "category": "Техника"
     },
@@ -388,7 +394,7 @@
     },
     {
       "id": "europat",
-      "patterns": ["EUROPAT", "EURO PAT", "ЕВРОПАТ"],
+      "patterns": ["EUROPAT", "EURO PAT", "ЕВРОПАТ", "ЕВРО ПАТ", "EVROPAT", "EVRO PAT"],
       "name": "Europat",
       "category": "Онлайн пазаруване"
     },
@@ -620,13 +626,13 @@
       "id": "atm",
       "patterns": ["ATM", "АТМ", "БАНКОМАТ", "DSKBANK HR BO"],
       "name": "Теглене от банкомат",
-      "category": "Банки"
+      "category": "Други"
     },
     {
       "id": "revolut",
       "patterns": ["REVOLUT"],
       "name": "Revolut",
-      "category": "Банки"
+      "category": "Други"
     }
   ],
   "subscriptions": [
