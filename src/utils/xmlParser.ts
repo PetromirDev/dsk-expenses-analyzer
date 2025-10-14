@@ -17,7 +17,10 @@ import {
   calculateTotals,
   aggregateIncomeAndExpensesByMonth
 } from '../analyzers/aggregations'
-import { getCustomMappings as getMerchantCustomMappings } from '../services/merchantMatcher'
+import {
+  getCustomMappings as getMerchantCustomMappings,
+  merchantDatabase
+} from '../services/merchantMatcher'
 
 // Re-export from services and utilities for backward compatibility
 export { merchantDatabase } from '../services/merchantMatcher'
@@ -37,6 +40,12 @@ export const defaultGroups: string[] = [
   'Жилище',
   'Битови',
   'Транспорт',
+  'Почивки',
+  'Абонаменти',
+  'Кафе',
+  'Образование',
+  'Спорт',
+  'Кредити',
   'Развлечения',
   'Ресторанти',
   'Онлайн пазаруване',
@@ -45,13 +54,16 @@ export const defaultGroups: string[] = [
   'Други'
 ]
 
-// Build defaultBusinessGroupMapping from merchantDatabase
-import { merchantDatabase } from '../services/merchantMatcher'
-export const defaultBusinessGroupMapping: Record<string, string> = Object.values(
-  merchantDatabase
-).reduce(
+// Build businessGroupMapping from merchantDatabase
+export const businessGroupMapping: Record<string, string> = Object.values(merchantDatabase).reduce(
   (acc, merchant) => {
     acc[merchant.name] = merchant.category
+    if (defaultGroups.indexOf(merchant.category) === -1) {
+      console.error(
+        `Error: Merchant "${merchant.name}" has unknown category "${merchant.category}". Please use one of the default groups.`
+      )
+    }
+
     return acc
   },
   {} as Record<string, string>
@@ -111,6 +123,10 @@ export function getBusinessGroup(businessName: string) {
 
   const lowercaseName = businessName.toLowerCase()
 
+  if (businessGroupMapping[businessName]) {
+    return businessGroupMapping[businessName]
+  }
+
   if (
     lowercaseName.includes('sladkarnitsa') ||
     lowercaseName.includes('сладкарница') ||
@@ -143,10 +159,6 @@ export function getBusinessGroup(businessName: string) {
 
   if (lowercaseName.includes('hotel')) {
     return 'Почивки'
-  }
-
-  if (defaultBusinessGroupMapping[businessName]) {
-    return defaultBusinessGroupMapping[businessName]
   }
 
   return 'Други'

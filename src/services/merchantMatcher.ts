@@ -63,13 +63,8 @@ export function getBusinessInfo(
   // Second priority: Check merchantDatabase with pattern matching
   // Sort merchants by longest pattern first for better matching
   const merchants = Object.values(merchantDatabase)
-  const sortedMerchants = merchants.sort((a, b) => {
-    const maxLengthA = Math.max(...a.patterns.map((p) => p.length))
-    const maxLengthB = Math.max(...b.patterns.map((p) => p.length))
-    return maxLengthB - maxLengthA
-  })
 
-  for (const merchant of sortedMerchants) {
+  for (const merchant of merchants) {
     for (const pattern of merchant.patterns) {
       const lowercasePattern = pattern.toLowerCase()
 

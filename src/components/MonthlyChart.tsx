@@ -26,11 +26,11 @@ interface MonthlyChartProps {
 const chartConfig = {
   income: {
     label: 'Приходи',
-    color: '#22c55e' // Green
+    color: '#22c55e'
   },
   expenses: {
     label: 'Разходи',
-    color: '#ef4444' // Red
+    color: '#ef4444'
   }
 } satisfies ChartConfig
 

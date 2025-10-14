@@ -29,7 +29,6 @@ export function useXMLData() {
   const reanalyzeData = async () => {
     if (transactions.length === 0) return
 
-    // FAST: Just re-aggregate existing transactions (no XML parsing)
     const result = recomputeAnalysis(transactions)
     setData(result)
   }
