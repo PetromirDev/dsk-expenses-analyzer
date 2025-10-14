@@ -1011,6 +1011,24 @@
     <Amount>95,50</Amount>
   </AccountMovement>
 
+  <AccountMovement>
+    <ValueDate>01.09.2025</ValueDate>
+    <Reason>Плащане на услуга</Reason>
+    <OppositeSideName>SPIDI</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>45,25</Amount>
+  </AccountMovement>
+
+  <AccountMovement>
+    <ValueDate>02.09.2025</ValueDate>
+    <Reason>Плащане на услуга</Reason>
+    <OppositeSideName>Mr Bricolage Plovdiv</OppositeSideName>
+    <OppositeSideAccount></OppositeSideAccount>
+    <MovementType>Debit</MovementType>
+    <Amount>32,11</Amount>
+  </AccountMovement>
+
   <!-- Very large transactions (500+ BGN) - Major purchases -->
   <!-- MOVED to other months to balance budget -->
 
