@@ -80,7 +80,7 @@
     },
     {
       "id": "mymarket",
-      "patterns": ["MY MARKET", "МАЙ МАРКЕТ"],
+      "patterns": ["MY MARKET", "MAY MARKET", "МАЙ МАРКЕТ"],
       "name": "My Market",
       "category": "Храна"
     }
@@ -96,12 +96,6 @@
       "id": "technomarket",
       "patterns": ["TECHNOMARKET", "ТЕХНОМАРКЕТ", "TEHNO MARKET"],
       "name": "Technomarket",
-      "category": "Техника"
-    },
-    {
-      "id": "emag",
-      "patterns": ["EMAG", "E-MAG", "ЕМАГ"],
-      "name": "eMAG",
       "category": "Техника"
     },
     {
@@ -364,7 +358,7 @@
     },
     {
       "id": "speedy",
-      "patterns": ["SPEEDY", "СПИДИ"],
+      "patterns": ["SPEEDY", "СПИДИ", "SPIDI"],
       "name": "Speedy",
       "category": "Онлайн пазаруване"
     },
@@ -447,6 +441,18 @@
       "id": "shein",
       "patterns": ["SHEIN", "ШЕЙН"],
       "name": "Shein",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "ozone",
+      "patterns": ["OZONE", "ОЗОН"],
+      "name": "Ozone.bg",
+      "category": "Онлайн пазаруване"
+    },
+    {
+      "id": "emag",
+      "patterns": ["EMAG", "E-MAG", "ЕМАГ"],
+      "name": "eMAG",
       "category": "Онлайн пазаруване"
     }
   ],
@@ -614,6 +620,12 @@
       "id": "atm",
       "patterns": ["ATM", "АТМ", "БАНКОМАТ", "DSKBANK HR BO"],
       "name": "Теглене от банкомат",
+      "category": "Банки"
+    },
+    {
+      "id": "revolut",
+      "patterns": ["REVOLUT"],
+      "name": "Revolut",
       "category": "Банки"
     }
   ],
