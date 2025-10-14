@@ -92,6 +92,10 @@ function App() {
     }
   }
 
+  const filteredData = getFilteredData()
+
+  const filteredTotal = filteredData.reduce((sum, item) => sum + item.amount, 0)
+
   const handleAddGroup = () => {
     setShowAddGroupModal(true)
   }
@@ -195,6 +199,7 @@ function App() {
                 onGroupChange={setFilterGroup}
                 allGroups={getAllGroups()}
                 onAddGroup={handleAddGroup}
+                filteredTotal={filteredTotal}
               />
             )}
 
@@ -212,7 +217,7 @@ function App() {
               <>
                 <MonthlyChart data={data.monthlyChartData} />
                 <DataTable
-                  data={getFilteredData()}
+                  data={filteredData}
                   selectedView="overview"
                   editingBusiness={businessEditor.editingBusiness}
                   editValue={businessEditor.editValue}
@@ -234,7 +239,7 @@ function App() {
             {/* Business Transactions Tab */}
             {activeTab === 'business' && (
               <DataTable
-                data={getFilteredData()}
+                data={filteredData}
                 selectedView="business"
                 editingBusiness={businessEditor.editingBusiness}
                 editValue={businessEditor.editValue}

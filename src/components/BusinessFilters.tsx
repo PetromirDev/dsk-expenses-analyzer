@@ -12,6 +12,7 @@ interface BusinessFiltersProps {
   onGroupChange: (value: string) => void
   allGroups: string[]
   onAddGroup: () => void
+  filteredTotal: number
 }
 
 export function BusinessFilters({
@@ -20,10 +21,11 @@ export function BusinessFilters({
   selectedGroup,
   onGroupChange,
   allGroups,
-  onAddGroup
+  onAddGroup,
+  filteredTotal
 }: BusinessFiltersProps) {
   return (
-    <div className="bg-white rounded-lg shadow p-3 sm:p-4 mb-6">
+    <div className="flex flex-col gap-4 bg-white rounded-lg shadow p-3 sm:p-4 mb-6">
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
         {/* Search */}
         <div className="relative flex-1 min-w-0">
@@ -72,6 +74,11 @@ export function BusinessFilters({
             <span className="sm:hidden">Нова</span>
           </button>
         </div>
+      </div>
+      {/* Display total for the selected filters */}
+      <div className="text-left text-gray-700 text-sm">
+        <span className="font-medium">Общо:</span>{' '}
+        <span className="font-semibold">{filteredTotal.toFixed(2)} лв.</span>
       </div>
     </div>
   )
