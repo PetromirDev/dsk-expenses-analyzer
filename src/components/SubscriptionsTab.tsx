@@ -28,6 +28,16 @@ export function SubscriptionsTab({ subscriptions }: SubscriptionsTabProps) {
 
   return (
     <div className="space-y-6">
+      {/* Info alert */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
+        <div className="flex items-center gap-2">
+          <AlertCircle className="text-blue-600 flex-shrink-0" size={20} />
+          <p className="text-sm text-blue-800">
+            Откриваме абонаменти като анализираме транзакциите ти локално (без да се изпращат към
+            сървъри). Възможни са неточности.
+          </p>
+        </div>
+      </div>
       {/* Active Subscriptions */}
       {activeSubscriptions.length > 0 && (
         <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
